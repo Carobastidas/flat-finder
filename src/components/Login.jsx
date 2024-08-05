@@ -52,7 +52,7 @@ function Login() {
             <p className="text-center text-sm text-gray-400">
               Don&#x27;t have an account yet?
               <a
-                href="#!"
+                href="/register"
                 className="font-semibold text-indigo-500 focus:text-indigo-600 focus:underline focus:outline-none"
               >
                 Register
@@ -66,4 +66,4 @@ function Login() {
   );
 }
 
-export default Login;
+export { Login };
