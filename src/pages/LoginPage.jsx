@@ -1,12 +1,12 @@
-function Login() {
+//Pagina de inicion de sesion
+import { TitleForm } from "../components/Commons/TitleForm";
+function LoginPage() {
   return (
     <section className="flex min-h-screen justify-center bg-gray-100 font-sans dark:bg-gray-900 antialiased">
       <div className="container rounded my-auto max-w-md border-2 border-gray-200 p-3 dark:border-gray-700 bg-white dark:bg-gray-900 antialiased">
         <div className="my-6 text-center">
-          <h1 className="text-3xl font-semibold text-gray-700">Login</h1>
-          <p className="text-gray-500">Login to access your account</p>
+          <TitleForm title="Login" paragraph="Login to access your account"/>
         </div>
-
         <div className="m-6">
           <form className="mb-4">
             <div className="mb-4">
@@ -22,9 +22,9 @@ function Login() {
                 id="email"
                 placeholder="Your email address"
                 className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300
-                  focus:border-indigo-300 focus:outline-none focus:ri ng focus:ring-indigo-100
-                  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
-                  dark:focus:border-indigo-300 dark:focus:outline-none dark:focus:ring dark:focus:ring-indigo-600"
+                    focus:border-indigo-300 focus:outline-none focus:ri ng focus:ring-indigo-100
+                    dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
+                    dark:focus:border-indigo-300 dark:focus:outline-none dark:focus:ring dark:focus:ring-indigo-600"
               />
             </div>
             <div className="mb-6">
@@ -66,4 +66,4 @@ function Login() {
   );
 }
 
-export { Login };
+export { LoginPage };
