@@ -1,9 +1,10 @@
-import { Menu } from "./Menu.jsx";
+//Pagina principal donde vamos a mostrar los flats
+import { Navbar } from "../components/Commons/Navbar.jsx";
 
-function AllFlats() {
+function HomePage() {
   return (
     <>
-      <Menu />
+      <Navbar />
       <div className="flex items-center m-[100px]">
         <article
           id=""
@@ -268,4 +269,4 @@ function AllFlats() {
   );
 }
 
-export { AllFlats };
+export { HomePage };

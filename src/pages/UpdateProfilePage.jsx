@@ -1,10 +1,11 @@
-function Register() {
+//Pagina para actualizar los datos del usuario
+function UpdateProfilePage() {
   return (
-    <div className="flex min-h-screen justify-center bg-gray-100 font-sans">
+    <div className="flex min-h-screen justify-center bg-gray-100 font-sans bg-cover">
       <div className="container rounded my-auto max-w-md border-2 border-gray-200 bg-white p-3">
         <div className="my-6 text-center">
           <h1 className="text-3xl font-semibold text-gray-700">
-            Create account
+            UpdateProfilePage
           </h1>
           <p className="text-gray-500">Login to access your account</p>
         </div>
@@ -41,7 +42,7 @@ function Register() {
                 />
                 <img
                   id="image-user"
-                  src="../../src/assets/default.jpg"
+                  src="https://avatars.githubusercontent.com/u/69631?s=200&v=4"
                   alt="Imagen cargada"
                   className="w-32 rounded-full"
                 />
@@ -146,7 +147,7 @@ function Register() {
             <div className="mb-6">
               <div className="mb-1 flex justify-between">
                 <label htmlFor="password" className="text-sm text-gray-600">
-                  Confirm password
+                  Password
                 </label>
               </div>
               <input
@@ -171,7 +172,7 @@ function Register() {
                 href="#!"
                 className="font-semibold text-indigo-500 focus:text-indigo-600 focus:underline focus:outline-none"
               >
-                Register
+                Profile Update
               </a>
               .
             </p>
@@ -182,4 +183,4 @@ function Register() {
   );
 }
 
-export { Register };
+export { UpdateProfilePage };

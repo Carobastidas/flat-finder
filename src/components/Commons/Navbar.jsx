@@ -1,6 +1,7 @@
+//Componente menu de navegacion para toda la app
 import { useState } from "react";
 
-function Menu({ onClick }) {
+function Navbar({ onClick }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -116,4 +117,4 @@ function Menu({ onClick }) {
   );
 }
 
-export { Menu };
+export { Navbar };

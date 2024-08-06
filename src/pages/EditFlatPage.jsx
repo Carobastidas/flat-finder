@@ -1,10 +1,13 @@
-function ViewFlat() {
+//Pagina para editar la informacion del flat
+function EditFlatPage() {
   return (
-    <section className="">
-      <div className="flex min-h-screen justify-center bg-gray-100 font-sans">
+    <>
+      <div className="flex min-h-screen justify-center bg-gray-100 font-sans bg-cover">
         <div className="container rounded my-auto max-w-md border-2 border-gray-200 bg-white p-3">
           <div className="my-6 text-center">
-            <h1 className="text-3xl font-semibold text-gray-700">View Flat</h1>
+            <h1 className="text-3xl font-semibold text-gray-700">
+              Update Flat
+            </h1>
             <p className="text-gray-500">Edita los datos de tu flat</p>
           </div>
 
@@ -20,12 +23,11 @@ function ViewFlat() {
                   />
                   <img
                     id="image-user"
-                    src="https://images.pexels.com/photos/6758234/pexels-photo-6758234.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    src="https://images.pexels.com/photos/7147366/pexels-photo-7147366.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                     alt="Imagen cargada"
                     className="w-full rounded mb-1"
                   />
                 </div>
-
                 <label
                   htmlFor="image-input"
                   className="absolute top-1 right-1 w-[]100px rounded bg-indigo-500 p-2 text-white duration-100 ease-in-out hover:bg-indigo-600 focus:outline-none text-center"
@@ -200,8 +202,8 @@ function ViewFlat() {
           </div>
         </div>
       </div>
-    </section>
+    </>
   );
 }
 
-export { ViewFlat };
+export { EditFlatPage };

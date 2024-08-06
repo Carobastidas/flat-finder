@@ -1,4 +1,5 @@
-function NewFlat() {
+//Pagina para crear un nuevo flat
+function NewFlatPage() {
   return (
     <>
       <div className="flex min-h-screen justify-center bg-gray-100 font-sans bg-cover">
@@ -204,4 +205,4 @@ function NewFlat() {
   );
 }
 
-export { NewFlat };
+export { NewFlatPage };
