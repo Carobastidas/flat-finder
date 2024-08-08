@@ -1,4 +1,6 @@
 //Pagina para editar la informacion del flat
+import { ButtonPrimaryForm } from "../components/Commons/ButtonPrimaryForm";
+
 function EditFlatPage() {
   return (
     <>
@@ -181,12 +183,7 @@ function EditFlatPage() {
                 </div>
               </div>
               <div className="mb-6">
-                <button
-                  type="button"
-                  className="w-full rounded bg-indigo-500 pt-2 pb-3 text-white duration-100 ease-in-out hover:bg-indigo-600 focus:outline-none"
-                >
-                  Update flat
-                </button>
+                <ButtonPrimaryForm text="Update flat" />
               </div>
               <p className="text-center text-sm text-gray-400">
                 Don&#x27;t have an account yet?
