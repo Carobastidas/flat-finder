@@ -1,4 +1,4 @@
-function TitleForm({title, paragraph}) {
+function HeaderForm({title, paragraph}) {
   return (
     <>
       <h1 className="text-3xl font-semibold text-gray-700">{title}</h1>
@@ -6,4 +6,4 @@ function TitleForm({title, paragraph}) {
     </>
   );
 }
-export { TitleForm };
+export { HeaderForm };
