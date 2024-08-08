@@ -1,4 +1,5 @@
 import { ButtonPrimaryForm } from "../components/Commons/ButtonPrimaryForm";
+import { FooterFrom } from "../components/Commons/FooterForm";
 import { HeaderForm } from "../components/Commons/HeaderForm";
 
 //Pagina para ver la informacion detallada de un flat
@@ -179,16 +180,7 @@ function FlatDetailsPage() {
                 </div>
               </div>
               <ButtonPrimaryForm text="Update flat" />
-              <p className="text-center text-sm text-gray-400">
-                Don&#x27;t have an account yet?
-                <a
-                  href="#!"
-                  className="font-semibold text-indigo-500 focus:text-indigo-600 focus:underline focus:outline-none"
-                >
-                  all flats
-                </a>
-                .
-              </p>
+              <FooterFrom message="Don't have an account yet?" linkText="all flats" />
             </form>
           </div>
         </div>

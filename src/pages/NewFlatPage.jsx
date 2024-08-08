@@ -1,4 +1,5 @@
 import { ButtonPrimaryForm } from "../components/Commons/ButtonPrimaryForm";
+import { FooterFrom } from "../components/Commons/FooterForm";
 import { HeaderForm } from "../components/Commons/HeaderForm";
 
 //Pagina para crear un nuevo flat
@@ -177,16 +178,7 @@ function NewFlatPage() {
                 </div>
               </div>
               <ButtonPrimaryForm text="Sing up" />
-              <p className="text-center text-sm text-gray-400">
-                Don&#x27;t have an account yet?
-                <a
-                  href="/all-flats"
-                  className="font-semibold text-indigo-500 focus:text-indigo-600 focus:underline focus:outline-none"
-                >
-                  Home
-                </a>
-                .
-              </p>
+              <FooterFrom message="Don't have an account yet?" linkText="Home" />
             </form>
           </div>
         </div>
