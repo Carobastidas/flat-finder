@@ -5,13 +5,7 @@ function UpdateProfilePage() {
   return (
     <div className="flex min-h-screen justify-center bg-gray-100 font-sans bg-cover">
       <div className="container rounded my-auto max-w-md border-2 border-gray-200 bg-white p-3">
-        <div className="my-6 text-center">
-          <h1 className="text-3xl font-semibold text-gray-700">
-            UpdateProfilePage
-          </h1>
-          <p className="text-gray-500">Login to access your account</p>
-        </div>
-
+        <HeaderForm title="UpdateProfilePage" description="Login to access your account" />
         <div className="m-6">
           <form className="mb-4">
             <div className="relative flex items-center justify-center gap-1">
