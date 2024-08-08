@@ -176,9 +176,7 @@ function NewFlatPage() {
                   />
                 </div>
               </div>
-              <div className="mb-6">
-                <ButtonPrimaryForm text="Sing up" />
-              </div>
+              <ButtonPrimaryForm text="Sing up" />
               <p className="text-center text-sm text-gray-400">
                 Don&#x27;t have an account yet?
                 <a

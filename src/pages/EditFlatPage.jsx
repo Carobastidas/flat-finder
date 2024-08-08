@@ -177,9 +177,7 @@ function EditFlatPage() {
                   />
                 </div>
               </div>
-              <div className="mb-6">
-                <ButtonPrimaryForm text="Update flat" />
-              </div>
+              <ButtonPrimaryForm text="Update flat" />
               <p className="text-center text-sm text-gray-400">
                 Don&#x27;t have an account yet?
                 <a

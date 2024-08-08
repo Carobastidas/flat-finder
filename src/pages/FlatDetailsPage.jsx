@@ -1,3 +1,4 @@
+import { ButtonPrimaryForm } from "../components/Commons/ButtonPrimaryForm";
 import { HeaderForm } from "../components/Commons/HeaderForm";
 
 //Pagina para ver la informacion detallada de un flat
@@ -177,14 +178,7 @@ function FlatDetailsPage() {
                   />
                 </div>
               </div>
-              <div className="mb-6">
-                <button
-                  type="button"
-                  className="w-full rounded bg-indigo-500 pt-2 pb-3 text-white duration-100 ease-in-out hover:bg-indigo-600 focus:outline-none"
-                >
-                  Update flat
-                </button>
-              </div>
+              <ButtonPrimaryForm text="Update flat" />
               <p className="text-center text-sm text-gray-400">
                 Don&#x27;t have an account yet?
                 <a
