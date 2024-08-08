@@ -1,11 +1,12 @@
 //Pagina de inicion de sesion
+import { ButtonPrimaryForm } from "../components/Commons/ButtonPrimaryForm";
 import { TitleForm } from "../components/Commons/TitleForm";
 function LoginPage() {
   return (
     <section className="flex min-h-screen justify-center bg-gray-100 font-sans dark:bg-gray-900 antialiased">
       <div className="container rounded my-auto max-w-md border-2 border-gray-200 p-3 dark:border-gray-700 bg-white dark:bg-gray-900 antialiased">
         <div className="my-6 text-center">
-          <TitleForm title="Login" paragraph="Login to access your account"/>
+          <TitleForm title="Login" paragraph="Login to access your account" />
         </div>
         <div className="m-6">
           <form className="mb-4">
@@ -42,12 +43,7 @@ function LoginPage() {
               />
             </div>
             <div className="mb-6">
-              <button
-                type="button"
-                className="w-full rounded bg-indigo-500 pt-2 pb-3 text-white duration-100 ease-in-out hover:bg-indigo-600 focus:outline-none"
-              >
-                Login
-              </button>
+              <ButtonPrimaryForm text="Login" />
             </div>
             <p className="text-center text-sm text-gray-400">
               Don&#x27;t have an account yet?
