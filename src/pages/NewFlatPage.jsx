@@ -1,3 +1,5 @@
+import { ButtonPrimaryForm } from "../components/Commons/ButtonPrimaryForm";
+
 //Pagina para crear un nuevo flat
 function NewFlatPage() {
   return (
@@ -180,12 +182,7 @@ function NewFlatPage() {
                 </div>
               </div>
               <div className="mb-6">
-                <button
-                  type="button"
-                  className="w-full rounded bg-indigo-500 pt-2 pb-3 text-white duration-100 ease-in-out hover:bg-indigo-600 focus:outline-none"
-                >
-                  Sing up
-                </button>
+                <ButtonPrimaryForm text="Sing up" />
               </div>
               <p className="text-center text-sm text-gray-400">
                 Don&#x27;t have an account yet?
