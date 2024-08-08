@@ -1,4 +1,5 @@
 import { ButtonPrimaryForm } from "../components/Commons/ButtonPrimaryForm";
+import { HeaderForm } from "../components/Commons/HeaderForm";
 
 //Pagina para actualizar los datos del usuario
 function UpdateProfilePage() {
@@ -154,9 +155,7 @@ function UpdateProfilePage() {
                 className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
               />
             </div>
-            <div className="mb-6">
-              <ButtonPrimaryForm text="Sing up" />
-            </div>
+            <ButtonPrimaryForm text="Sing up" />
             <p className="text-center text-sm text-gray-400">
               Don&#x27;t have an account yet?
               <a

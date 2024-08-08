@@ -154,14 +154,7 @@ function RegisterPage() {
                 className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
               />
             </div>
-            <div className="mb-6">
-              <button
-                type="button"
-                className="w-full rounded bg-indigo-500 pt-2 pb-3 text-white duration-100 ease-in-out hover:bg-indigo-600 focus:outline-none"
-              >
-                Sing up
-              </button>
-            </div>
+            <ButtonPrimaryForm text="Sing up" />
             <p className="text-center text-sm text-gray-400">
               Don&#x27;t have an account yet?
               <a
