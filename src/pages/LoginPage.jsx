@@ -2,6 +2,7 @@
 import { ButtonPrimaryForm } from "../components/Commons/ButtonPrimaryForm";
 import { HeaderForm } from "../components/Commons/HeaderForm";
 import { FooterFrom } from "../components/Commons/FooterForm";
+import { FormField } from "../components/Commons/FormField";
 
 function LoginPage() {
   return (
@@ -10,38 +11,21 @@ function LoginPage() {
         <HeaderForm title="Login" description="Login to access your account" />
         <div className="m-6">
           <form className="mb-4">
-            <div className="mb-4">
-              <label
-                htmlFor="email"
-                className="mb-1 block text-sm text-gray-600 dark:text-white"
-              >
-                Email Address
-              </label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                placeholder="Your email address"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300
-                    focus:border-indigo-300 focus:outline-none focus:ri ng focus:ring-indigo-100
-                    dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
-                    dark:focus:border-indigo-300 dark:focus:outline-none dark:focus:ring dark:focus:ring-indigo-600"
-              />
-            </div>
-            <div className="mb-6">
-              <div className="mb-1 flex justify-between">
-                <label htmlFor="password" className="text-sm text-gray-600">
-                  Password
-                </label>
-              </div>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                placeholder="Your password"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-indigo-300 dark:focus:outline-none dark:focus:ring dark:focus:ring-indigo-600"
-              />
-            </div>
+            <FormField
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Your email address"
+              label="Email Address"
+            />
+            <FormField
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Your password"
+              label="Password"
+            />
+
             <ButtonPrimaryForm text="Login" />
             <FooterFrom message="Don't have an account yet?" linkText="Register" />
           </form>
