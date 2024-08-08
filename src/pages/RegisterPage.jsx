@@ -1,4 +1,6 @@
+import { ButtonPrimaryForm } from "../components/Commons/ButtonPrimaryForm";
 import { HeaderForm } from "../components/Commons/HeaderForm";
+import { FooterFrom } from "../components/Commons/FooterForm";
 
 //Pagina para el registro del usuario
 function RegisterPage() {
@@ -155,16 +157,7 @@ function RegisterPage() {
               />
             </div>
             <ButtonPrimaryForm text="Sing up" />
-            <p className="text-center text-sm text-gray-400">
-              Don&#x27;t have an account yet?
-              <a
-                href="#!"
-                className="font-semibold text-indigo-500 focus:text-indigo-600 focus:underline focus:outline-none"
-              >
-                RegisterPage
-              </a>
-              .
-            </p>
+            <FooterFrom message="Don't have an account yet?" linkText="Register" />
           </form>
         </div>
       </div>

@@ -1,6 +1,8 @@
 //Pagina de inicion de sesion
 import { ButtonPrimaryForm } from "../components/Commons/ButtonPrimaryForm";
 import { HeaderForm } from "../components/Commons/HeaderForm";
+import { FooterFrom } from "../components/Commons/FooterForm";
+
 function LoginPage() {
   return (
     <section className="flex min-h-screen justify-center bg-gray-100 font-sans dark:bg-gray-900 antialiased">
@@ -41,16 +43,7 @@ function LoginPage() {
               />
             </div>
             <ButtonPrimaryForm text="Login" />
-            <p className="text-center text-sm text-gray-400">
-              Don&#x27;t have an account yet?
-              <a
-                href="/register"
-                className="font-semibold text-indigo-500 focus:text-indigo-600 focus:underline focus:outline-none"
-              >
-                Register
-              </a>
-              .
-            </p>
+            <FooterFrom message="Don't have an account yet?" linkText="Register" />
           </form>
         </div>
       </div>

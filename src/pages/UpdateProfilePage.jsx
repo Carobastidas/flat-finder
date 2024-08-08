@@ -1,4 +1,5 @@
 import { ButtonPrimaryForm } from "../components/Commons/ButtonPrimaryForm";
+import { FooterFrom } from "../components/Commons/FooterForm";
 import { HeaderForm } from "../components/Commons/HeaderForm";
 
 //Pagina para actualizar los datos del usuario
@@ -156,16 +157,7 @@ function UpdateProfilePage() {
               />
             </div>
             <ButtonPrimaryForm text="Sing up" />
-            <p className="text-center text-sm text-gray-400">
-              Don&#x27;t have an account yet?
-              <a
-                href="#!"
-                className="font-semibold text-indigo-500 focus:text-indigo-600 focus:underline focus:outline-none"
-              >
-                Profile Update
-              </a>
-              .
-            </p>
+            <FooterFrom message="Don't have an account yet?" linkText="Profile Update" />
           </form>
         </div>
       </div>
