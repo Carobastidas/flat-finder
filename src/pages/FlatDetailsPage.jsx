@@ -1,14 +1,12 @@
+import { HeaderForm } from "../components/Commons/HeaderForm";
+
 //Pagina para ver la informacion detallada de un flat
 function FlatDetailsPage() {
   return (
     <section className="">
       <div className="flex min-h-screen justify-center bg-gray-100 font-sans">
         <div className="container rounded my-auto max-w-md border-2 border-gray-200 bg-white p-3">
-          <div className="my-6 text-center">
-            <h1 className="text-3xl font-semibold text-gray-700">View Flat</h1>
-            <p className="text-gray-500">Edita los datos de tu flat</p>
-          </div>
-
+          <HeaderForm title="View Flat" description="Edita los datos de tu flat" />
           <div className="m-6">
             <form className="mb-4">
               <div className="relative">
