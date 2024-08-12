@@ -2,13 +2,13 @@
 
 import { Navbar } from "../components/Commons/Navbar";
 
-function ProfilePage () {
+function AllUsersPage () {
     return (
         <>
             <Navbar />
-            <h1>Profile Page</h1>
+            <h1>AllUsers Page</h1>
         </>
     );
 }
 
-export { ProfilePage };
+export { AllUsersPage };
