@@ -7,6 +7,7 @@ import { UpdateProfilePage } from "./pages/UpdateProfilePage";
 import { EditFlatPage } from "./pages/EditFlatPage";
 import { FlatDetailsPage } from "./pages/FlatDetailsPage";
 import { FavouritesPage } from "./pages/FavouritesPage";
+import { MyFlatsPage } from "./pages/MyFlatsPage";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Route path="/edit-flat" element={<EditFlatPage />} />
       <Route path="/flat-details" element={<FlatDetailsPage />} />
       <Route path="/favourites" element={<FavouritesPage />} />
+      <Route path="my-flats" element={<MyFlatsPage />} />
     </Routes>
   );
 }

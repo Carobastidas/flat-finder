@@ -1,6 +1,5 @@
 //Pagina para ver el listado de flats favoritos
 
-//Pagina principal donde vamos a mostrar los flats
 import { Navbar } from "../components/Commons/Navbar.jsx";
 import { FlatItem } from "../components/Flats/FlatItem.jsx";
 
