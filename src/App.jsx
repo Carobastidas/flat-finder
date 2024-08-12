@@ -6,6 +6,8 @@ import { NewFlatPage } from "./pages/NewFlatPage";
 import { UpdateProfilePage } from "./pages/UpdateProfilePage";
 import { EditFlatPage } from "./pages/EditFlatPage";
 import { FlatDetailsPage } from "./pages/FlatDetailsPage";
+import { FavouritesPage } from "./pages/FavouritesPage";
+import { MyFlatsPage } from "./pages/MyFlatsPage";
 
 function App() {
   return (
@@ -14,9 +16,11 @@ function App() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/home" element={<HomePage />} />
       <Route path="/new-flat" element={<NewFlatPage />} />
-      <Route path="/profile-update" element={<UpdateProfilePage />} />
+      <Route path="/update-profile" element={<UpdateProfilePage />} />
       <Route path="/edit-flat" element={<EditFlatPage />} />
-      <Route path="/details-flat" element={<FlatDetailsPage />} />
+      <Route path="/flat-details" element={<FlatDetailsPage />} />
+      <Route path="/favourites" element={<FavouritesPage />} />
+      <Route path="my-flats" element={<MyFlatsPage />} />
     </Routes>
   );
 }
