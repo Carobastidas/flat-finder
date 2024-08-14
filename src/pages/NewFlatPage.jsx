@@ -1,9 +1,9 @@
+//Pagina para crear un nuevo flat
 import { ButtonPrimaryForm } from "../components/Commons/ButtonPrimaryForm";
 import { FooterFrom } from "../components/Commons/FooterForm";
 import { HeaderForm } from "../components/Commons/HeaderForm";
-
-//Pagina para crear un nuevo flat
-function NewFlatPage() {
+import { useFormik } from "formik";
+import * as Yup from "yup";
   return (
     <>
       <div className="flex min-h-screen justify-center bg-gray-100 font-sans bg-cover">
@@ -185,6 +185,6 @@ function NewFlatPage() {
       </div>
     </>
   );
-}
+
 
 export { NewFlatPage };
