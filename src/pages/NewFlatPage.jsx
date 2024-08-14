@@ -1,16 +1,47 @@
 //Pagina para crear un nuevo flat
 import { ButtonPrimaryForm } from "../components/Commons/ButtonPrimaryForm";
-import { FooterFrom } from "../components/Commons/FooterForm";
+import { FooterForm } from "../components/Commons/FooterForm"; // Corrigido el nombre de importación
+import { FormField } from "../components/Commons/FormField";
 import { HeaderForm } from "../components/Commons/HeaderForm";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+
+const validationSchema = Yup.object({
+  city: Yup.string().required('City is required'),
+  streetName: Yup.string().required('Street name is required'),
+  number: Yup.number().required('Street number is required'),
+  area: Yup.number().required('Area size is required'),
+  year: Yup.number().required('Year build is required'),
+  rent: Yup.number().required('Rent price is required'),
+  date: Yup.date().required('Date is required'),
+  ac: Yup.boolean(),
+});
+
+function NewFlatPage() {
+  const formik = useFormik({
+    initialValues: {
+      city: '',
+      streetName: '',
+      number: '',
+      area: '',
+      year: '',
+      rent: '',
+      date: '',
+      ac: false,
+    },
+    validationSchema: validationSchema,
+    onSubmit: values => {
+      console.log(values);
+    },
+  });
+
   return (
     <>
       <div className="flex min-h-screen justify-center bg-gray-100 font-sans bg-cover">
         <div className="container rounded my-auto max-w-md border-2 border-gray-200 bg-white p-3">
-          <HeaderForm title="Create flat" description="Login to access your account" />
+          <HeaderForm title="Create flat" description="Fill out the form to create a new flat" />
           <div className="m-6">
-            <form className="mb-4">
+            <form onSubmit={formik.handleSubmit} className="mb-4">
               <div className="relative">
                 <div className="flex justify-center items-center gap-1">
                   <input
@@ -18,17 +49,18 @@ import * as Yup from "yup";
                     id="image-input"
                     accept="image/*"
                     className="hidden"
+                    onChange={(event) => formik.setFieldValue("image", event.currentTarget.files[0])}
                   />
                   <img
                     id="image-user"
                     src="https://images.pexels.com/photos/7005453/pexels-photo-7005453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                    alt="Imagen cargada"
+                    alt="Uploaded image"
                     className="w-full rounded mb-1"
                   />
                 </div>
                 <label
                   htmlFor="image-input"
-                  className="absolute top-1 right-1 w-[]100px rounded bg-indigo-500 p-2 text-white duration-100 ease-in-out hover:bg-indigo-600 focus:outline-none text-center"
+                  className="absolute top-1 right-1 w-32 rounded bg-indigo-500 p-2 text-white duration-100 ease-in-out hover:bg-indigo-600 focus:outline-none text-center"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -36,7 +68,7 @@ import * as Yup from "yup";
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="size-6"
+                    className="w-6 h-6"
                   >
                     <path
                       strokeLinecap="round"
@@ -45,146 +77,145 @@ import * as Yup from "yup";
                     />
                   </svg>
                 </label>
-                <span hidden id="image-error">
-                  Cargar la imagen de tu inmueble
-                </span>
+                {formik.errors.image && formik.touched.image ? (
+                  <span id="image-error" className="text-red-500 text-sm">
+                    {formik.errors.image}
+                  </span>
+                ) : null}
               </div>
+
               <div className="flex gap-2">
-                <div className="mb-4">
-                  <label
-                    htmlFor="city"
-                    className="mb-1 block text-sm text-gray-600"
-                  >
-                    City
-                  </label>
-                  <input
-                    type="text"
-                    name="city"
-                    id="name"
-                    placeholder="Your city"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label
-                    htmlFor="street-name"
-                    className="mb-1 block text-sm text-gray-600"
-                  >
-                    Street Name
-                  </label>
-                  <input
-                    type="text"
-                    name="street-name"
-                    id="street-name"
-                    placeholder="Your street name"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
-                  />
-                </div>
+                <FormField
+                  label="City"
+                  type="text"
+                  name="city"
+                  id="city"
+                  placeholder="Your city"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
+                  value={formik.values.city}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+                {formik.touched.city && formik.errors.city ? (
+                  <div className="text-red-500 text-sm">{formik.errors.city}</div>
+                ) : null}
               </div>
+
+              <FormField
+                label="Street Name"
+                type="text"
+                name="streetName"
+                id="streetName"
+                placeholder="Your street name"
+                className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
+                value={formik.values.streetName}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              {formik.touched.streetName && formik.errors.streetName ? (
+                <div className="text-red-500 text-sm">{formik.errors.streetName}</div>
+              ) : null}
+
+              <FormField
+                label="Street Number"
+                type="number"
+                name="number"
+                id="number"
+                placeholder="Your number"
+                className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
+                value={formik.values.number} 
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              {formik.touched.number && formik.errors.number ? (
+                <div className="text-red-500 text-sm">{formik.errors.number}</div>
+              ) : null}
+
+              <FormField
+                label="Area size"
+                type="number"
+                name="area"
+                id="area"
+                placeholder="Your area size"
+                className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
+                value={formik.values.area} 
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              {formik.touched.area && formik.errors.area ? (
+                <div className="text-red-500 text-sm">{formik.errors.area}</div>
+              ) : null}
+
               <div className="flex gap-2">
-                <div className="mb-4">
-                  <label
-                    htmlFor="number"
-                    className="mb-1 block text-sm text-gray-600"
-                  >
-                    Street number
-                  </label>
-                  <input
-                    type="number"
-                    name="number"
-                    id="number"
-                    placeholder="Your number"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label
-                    htmlFor="area"
-                    className="mb-1 block text-sm text-gray-600"
-                  >
-                    Area size
-                  </label>
-                  <input
-                    type="number"
-                    name="area"
-                    id="area"
-                    placeholder="Your Area size"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
-                  />
-                </div>
+                <FormField
+                  label="Year build"
+                  type="number"
+                  name="year"
+                  id="year"
+                  placeholder="Your year"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
+                  value={formik.values.year}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+                {formik.touched.year && formik.errors.year ? (
+                  <div className="text-red-500 text-sm">{formik.errors.year}</div>
+                ) : null}
+
+                <FormField
+                  label="Rent price"
+                  type="number"
+                  name="rent"
+                  id="rent"
+                  placeholder="Your rent"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
+                  value={formik.values.rent}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+                {formik.touched.rent && formik.errors.rent ? (
+                  <div className="text-red-500 text-sm">{formik.errors.rent}</div>
+                ) : null}
+
+                <FormField
+                  label="Date"
+                  type="date"
+                  name="date"
+                  id="date"
+                  placeholder="Your date"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
+                  value={formik.values.date}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+                {formik.touched.date && formik.errors.date ? (
+                  <div className="text-red-500 text-sm">{formik.errors.date}</div>
+                ) : null}
               </div>
-              <div className="flex gap-2">
-                <div className="mb-4">
-                  <label
-                    htmlFor="yaer"
-                    className="mb-1 block text-sm text-gray-600"
-                  >
-                    Year build
-                  </label>
-                  <input
-                    type="number"
-                    name="yaer"
-                    id="yaer"
-                    placeholder="Your yaer"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
-                  />
-                </div>
-                <div className="flex justify-center">
-                  <label
-                    htmlFor="ac"
-                    className="flex items-center cursor-pointer"
-                  >
-                    Has AC:
-                    <input
-                      id="ac"
-                      type="checkbox"
-                      name="ac"
-                      className="sr-only peer"
-                    />
-                    <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-indigo-300 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600 mx-2"></div>
-                  </label>
-                </div>
+
+              <div className="flex items-center">
+                <input
+                  id="ac"
+                  type="checkbox"
+                  name="ac"
+                  className="mr-2"
+                  checked={formik.values.ac}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+                <label htmlFor="ac" className="text-sm text-gray-700">
+                  Has AC
+                </label>
               </div>
-              <div className="flex gap-2">
-                <div className="mb-4">
-                  <label
-                    htmlFor="rent"
-                    className="mb-1 block text-sm text-gray-600"
-                  >
-                    Rent price
-                  </label>
-                  <input
-                    type="number"
-                    name="rent"
-                    id="rent"
-                    placeholder="Your rent"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label
-                    htmlFor="date"
-                    className="mb-1 block text-sm text-gray-600"
-                  >
-                    Date
-                  </label>
-                  <input
-                    type="date"
-                    name="date"
-                    id="date"
-                    placeholder="Your date size"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
-                  />
-                </div>
-              </div>
-              <ButtonPrimaryForm text="Sing up" />
-              <FooterFrom message="Don't have an account yet?" linkText="Home" />
+
+              <ButtonPrimaryForm text="Create flat" />
             </form>
+            <FooterForm message="" linkText="" />
           </div>
         </div>
       </div>
     </>
   );
+}
 
-
-export { NewFlatPage };
+export { NewFlatPage }; 
