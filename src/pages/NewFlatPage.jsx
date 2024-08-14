@@ -4,6 +4,8 @@ import { FooterFrom } from "../components/Commons/FooterForm";
 import { HeaderForm } from "../components/Commons/HeaderForm";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+
+function NewFlatPage(params) {
   return (
     <>
       <div className="flex min-h-screen justify-center bg-gray-100 font-sans bg-cover">
@@ -185,6 +187,6 @@ import * as Yup from "yup";
       </div>
     </>
   );
-
-
+  
+}
 export { NewFlatPage };
