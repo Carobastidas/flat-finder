@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
 import { FormField } from "../Commons/FormField";
 import { ButtonPrimaryForm } from "../Commons/ButtonPrimaryForm";
 import { HeaderForm } from "../Commons/HeaderForm";
 import { FooterFrom } from "../Commons/FooterForm";
 import { createFlat } from "../../services/firebase";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const validationSchema = Yup.object({
   city: Yup.string().required("City is required"),
@@ -25,14 +27,40 @@ const validationSchema = Yup.object({
   rentPrice: Yup.number()
     .required("Rent price is required")
     .positive("Must be a positive number"),
-  availableDate: Yup.date().required("Available date is required"),
+  availableDate: Yup.date()
+    .required("Available date is required")
+    .test("is-future", "Available date must be in the future", (value) => {
+      // Verifica si la fecha es mayor que la fecha actual
+      return value && new Date(value) > new Date();
+    }),
 });
 
 function FlatForm() {
-  const [imageUrl, setImageUrl] = useState(
-    "https://images.pexels.com/photos/775219/pexels-photo-775219.jpeg"
-  );
+  const navigate = useNavigate();
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+
+  const [imageUrl, setImageUrl] = useState("");
   const [imageFile, setImageFile] = useState(null);
+
+  useEffect(() => {
+    // Cargar la imagen por defecto desde Firebase Storage
+    const loadDefaultImage = async () => {
+      const storage = getStorage();
+      const defaultImageRef = ref(storage, "default-images/default-flat.png");
+      try {
+        const url = await getDownloadURL(defaultImageRef);
+        setImageUrl(url);
+      } catch (error) {
+        console.error("Error loading default image:", error);
+        // Si falla, usa una URL de respaldo
+        setImageUrl(
+          "https://via.placeholder.com/400x300?text=Default+Flat+Image"
+        );
+      }
+    };
+
+    loadDefaultImage();
+  }, []);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -60,14 +88,14 @@ function FlatForm() {
       const storage = getStorage();
 
       // Subir la imagen a Firebase Storage
-      let imageUrl = "";
+      let finalImageUrl = imageUrl;
       if (imageFile) {
         const storageRef = ref(
           storage,
           `flats/${Date.now()}_${imageFile.name}`
         );
         await uploadBytes(storageRef, imageFile);
-        imageUrl = await getDownloadURL(storageRef);
+        finalImageUrl = await getDownloadURL(storageRef);
       }
 
       // Preparar los datos para Firestore
@@ -75,16 +103,20 @@ function FlatForm() {
         ...values,
         imageUrl,
         createdAt: new Date(),
-        // Asumimos que tienes el userId del usuario actual
-        userId: "rt50jpdpEIOyt283H7E6", // Reemplaza esto con el ID real del usuario
+        userId: "rt50jpdpEIOyt283H7E6", // Reemplaza esto con el ID del usuario
       };
 
       // Usar la función createFlat para añadir el documento a Firestore
       const flatId = await createFlat(flatData);
       console.log("Flat created successfully with ID:", flatId);
 
-      // Aquí puedes añadir lógica adicional después de guardar exitosamente
-      // Por ejemplo, mostrar un mensaje de éxito o redirigir al usuario
+      // Mostrar el mensaje de éxito
+      setShowSuccessMessage(true);
+
+      // Esperar 2 segundos antes de redirigir
+      setTimeout(() => {
+        navigate("/home");
+      }, 2000);
     } catch (error) {
       console.error("Error adding flat: ", error);
       // Aquí puedes manejar el error, por ejemplo, mostrando un mensaje al usuario
@@ -101,6 +133,11 @@ function FlatForm() {
           description="Add a new flat to your listings"
         />
         <div className="m-6">
+          {showSuccessMessage && ( // Crear el componente y enviar por props si es error o de sucess
+            <div className="mb-4 p-2 bg-green-100 text-green-700 rounded">
+              Flat created successfully! Redirecting...
+            </div>
+          )}
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
@@ -121,7 +158,7 @@ function FlatForm() {
                       id="image-user"
                       src={imageUrl}
                       alt="Flat"
-                      className="w-full rounded mb-1"
+                      className="w-full h-60 rounded mb-1"
                     />
                   </div>
                   <label
