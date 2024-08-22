@@ -1,19 +1,34 @@
 //Componente menu de navegacion para toda la app
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { NavbarLinks } from "./NavbarLinks";
+import { getAuth, signOut } from "firebase/auth";
 
 function Navbar({ onClick }) {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
+  const handleLogout = async () => {
+    const auth = getAuth();
+    try {
+      await signOut(auth);
+      navigate("/");
+    } catch (error) {
+      console.log("Error en la sesion", error);
+    }
+  };
+
   return (
     <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
+        <Link
+          to="/"
+          className="flex items-center space-x-3 rtl:space-x-reverse"
+        >
           <img
             src="https://react.dev/favicon-32x32.png"
             className="h-8"
@@ -25,6 +40,7 @@ function Navbar({ onClick }) {
         </Link>
         <div className="flex gap-2 md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           <button
+            onClick={handleLogout}
             type="button"
             className="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
           >
