@@ -1,10 +1,18 @@
 import { useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
+import { createUser } from "../services/firebase";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+
 import { FormField } from "../components/Commons/FormField";
 import { ButtonPrimaryForm } from "../components/Commons/ButtonPrimaryForm";
 import { HeaderForm } from "../components/Commons/HeaderForm";
-import { FooterFrom } from "../components/Commons/FooterForm";
+import { FooterForm } from "../components/Commons/FooterForm";
 
 const validationSchema = Yup.object({
   name: Yup.string()
@@ -38,6 +46,7 @@ const validationSchema = Yup.object({
 });
 
 function RegisterPage() {
+  const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState(
     "https://avatars.githubusercontent.com/u/169313485?v=4"
   );
@@ -51,6 +60,8 @@ function RegisterPage() {
     }
   };
 
+  const auth = getAuth();
+
   const initialValues = {
     name: "",
     lastname: "",
@@ -61,9 +72,31 @@ function RegisterPage() {
     confirmPassword: "",
   };
 
-  const handleSubmit = (values, { setSubmitting }) => {
-    console.log(values);
-    setSubmitting(false);
+  const handleSubmit = async (values, { setSubmitting }) => {
+    try {
+      const { user } = await createUserWithEmailAndPassword(
+        auth,
+        values.email,
+        values.password
+      );
+      await updateProfile(user, {
+        displayName: `${values.name} ${values.lastname}}`,
+      });
+
+      await createUser({
+        name: values.name,
+        lastname: values.lastname,
+        email: values.email,
+        userRole: values.userRole,
+        uid: user.uid,
+      });
+      navigate("/home");
+      console.log("User registered successfully");
+    } catch (error) {
+      console.error("Error registering user:", error);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -165,7 +198,7 @@ function RegisterPage() {
               <ButtonPrimaryForm text="Sign up" type="submit" />
             </Form>
           </Formik>
-          <FooterFrom
+          <FooterForm
             message="Already have an account?"
             linkText="Login"
             to="/"
