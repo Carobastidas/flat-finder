@@ -1,14 +1,19 @@
 //Componente de formulario de login
 
+import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik, Form } from "formik";
+import { auth } from "../../config/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 import { HeaderForm } from "../Commons/HeaderForm";
-import { FooterFrom } from "../Commons/FooterForm";
+import { FooterForm } from "../Commons/FooterForm";
 import { FormField } from "../Commons/FormField";
 import { ButtonPrimaryForm } from "../Commons/ButtonPrimaryForm";
 
 function LoginForm() {
+  const navigate = useNavigate();
+
   // Esquema de validación con Yup
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -24,8 +29,17 @@ function LoginForm() {
     password: "",
   };
 
-  const handleSubmit = (values) => {
-    alert(`Logging in with email: ${values.email}`);
+  const handleSubmit = async (values, { setSubmitting }) => {
+    try {
+      await signInWithEmailAndPassword(auth, values.email, values.password);
+      navigate("/home");
+      console.log("User logged in successfully");
+    } catch (error) {
+      console.error("Error logging in:", error);
+      // Aquí puedes mostrar un mensaje de error al usuario
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -40,26 +54,37 @@ function LoginForm() {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            <Form className="mb-4">
-              <FormField
-                type="email"
-                name="email"
-                id="email"
-                placeholder="Your email address"
-                label="Email Address"
-              />
-              
-              <FormField
-                type="password"
-                name="password"
-                id="password"
-                placeholder="Your password"
-                label="Password"
-              />
-              
-              <ButtonPrimaryForm text="Login" />
-              <FooterFrom message="Don't have an account yet?" linkText="Register" />
-            </Form>
+            {({ isSubmitting }) => (
+              <Form className="mb-4">
+                <FormField
+                  type="email"
+                  name="email"
+                  id="email"
+                  placeholder="Your email address"
+                  label="Email Address"
+                />
+
+                <FormField
+                  type="password"
+                  name="password"
+                  id="password"
+                  placeholder="Your password"
+                  label="Password"
+                />
+
+                <ButtonPrimaryForm
+                  text="Login"
+                  type="submit"
+                  disabled={isSubmitting}
+                />
+
+                <FooterForm
+                  message="Don't have an account yet?"
+                  linkText="Register"
+                  to="register"
+                />
+              </Form>
+            )}
           </Formik>
         </div>
       </div>
