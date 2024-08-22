@@ -4,7 +4,11 @@ import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik, Form } from "formik";
 import { auth } from "../../config/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 
 import { HeaderForm } from "../Commons/HeaderForm";
 import { FooterForm } from "../Commons/FooterForm";
@@ -40,6 +44,12 @@ function LoginForm() {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleLoginWithGoogle = async () => {
+    const googleProvider = new GoogleAuthProvider();
+    await signInWithPopup(auth, googleProvider);
+    navigate("/home");
   };
 
   return (
@@ -86,6 +96,15 @@ function LoginForm() {
               </Form>
             )}
           </Formik>
+          <div className="mb-6">
+            <button
+              onClick={handleLoginWithGoogle}
+              type="button"
+              className="transition-colors duration-300 ease-in-out w-full rounded bg-white pt-2 pb-3 text-indigo-500 border border-indigo-300 hover:bg-indigo-400 hover:text-white focus:outline-none"
+            >
+              Login with Google
+            </button>
+          </div>
         </div>
       </div>
     </section>
