@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-function FooterFrom({ message, linkText, to }) {
+function FooterForm({ message, linkText, to }) {
   return (
     <p className="text-center text-sm text-gray-400">
       {message} &nbsp;
@@ -15,4 +15,4 @@ function FooterFrom({ message, linkText, to }) {
   );
 }
 
-export { FooterFrom };
+export { FooterForm };
