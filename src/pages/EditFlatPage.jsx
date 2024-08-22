@@ -1,6 +1,6 @@
 //Pagina para editar la informacion del flat
 import { ButtonPrimaryForm } from "../components/Commons/ButtonPrimaryForm";
-import { FooterFrom } from "../components/Commons/FooterForm";
+import { FooterForm } from "../components/Commons/FooterForm";
 import { HeaderForm } from "../components/Commons/HeaderForm";
 
 function EditFlatPage() {
@@ -8,7 +8,10 @@ function EditFlatPage() {
     <>
       <div className="flex min-h-screen justify-center bg-gray-100 font-sans bg-cover">
         <div className="container rounded my-auto max-w-md border-2 border-gray-200 bg-white p-3">
-          <HeaderForm title="Update Flat" description="Edita los datos de tu flat" />
+          <HeaderForm
+            title="Update Flat"
+            description="Edita los datos de tu flat"
+          />
           <div className="m-6">
             <form className="mb-4">
               <div className="relative">
@@ -179,7 +182,10 @@ function EditFlatPage() {
                 </div>
               </div>
               <ButtonPrimaryForm text="Update flat" />
-              <FooterFrom message="Don't have an account yet?" linkText="all flats" />
+              <FooterForm
+                message="Don't have an account yet?"
+                linkText="all flats"
+              />
             </form>
           </div>
         </div>
