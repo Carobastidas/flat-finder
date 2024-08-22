@@ -1,5 +1,5 @@
 import { ButtonPrimaryForm } from "../components/Commons/ButtonPrimaryForm";
-import { FooterFrom } from "../components/Commons/FooterForm";
+import { FooterForm } from "../components/Commons/FooterForm";
 import { HeaderForm } from "../components/Commons/HeaderForm";
 
 //Pagina para actualizar los datos del usuario
@@ -7,7 +7,10 @@ function UpdateProfilePage() {
   return (
     <div className="flex min-h-screen justify-center bg-gray-100 font-sans bg-cover">
       <div className="container rounded my-auto max-w-md border-2 border-gray-200 bg-white p-3">
-        <HeaderForm title="UpdateProfilePage" description="Login to access your account" />
+        <HeaderForm
+          title="UpdateProfilePage"
+          description="Login to access your account"
+        />
         <div className="m-6">
           <form className="mb-4">
             <div className="relative flex items-center justify-center gap-1">
@@ -157,7 +160,10 @@ function UpdateProfilePage() {
               />
             </div>
             <ButtonPrimaryForm text="Sing up" />
-            <FooterFrom message="Don't have an account yet?" linkText="Profile Update" />
+            <FooterForm
+              message="Don't have an account yet?"
+              linkText="Profile Update"
+            />
           </form>
         </div>
       </div>
