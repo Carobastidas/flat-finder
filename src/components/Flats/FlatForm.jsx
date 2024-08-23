@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { auth } from "../../config/firebase";
 
 import { FormField } from "../Commons/FormField";
 import { ButtonPrimaryForm } from "../Commons/ButtonPrimaryForm";
 import { HeaderForm } from "../Commons/HeaderForm";
-import { FooterFrom } from "../Commons/FooterForm";
-import { createFlat } from "../../services/firebase";
+import { FooterForm } from "../Commons/FooterForm";
+import { createFlat, creatFavorite } from "../../services/firebase";
 
 const validationSchema = Yup.object({
   city: Yup.string().required("City is required"),
@@ -38,9 +39,11 @@ const validationSchema = Yup.object({
 function FlatForm() {
   const navigate = useNavigate();
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-
   const [imageUrl, setImageUrl] = useState("");
   const [imageFile, setImageFile] = useState(null);
+
+  const user = auth.currentUser;
+  const userId = user ? user.uid : null;
 
   useEffect(() => {
     // Cargar la imagen por defecto desde Firebase Storage
@@ -52,7 +55,7 @@ function FlatForm() {
         setImageUrl(url);
       } catch (error) {
         console.error("Error loading default image:", error);
-        // Si falla, usa una URL de respaldo
+        // Si falla, usamos una URL de respaldo
         setImageUrl(
           "https://via.placeholder.com/400x300?text=Default+Flat+Image"
         );
@@ -98,17 +101,29 @@ function FlatForm() {
         finalImageUrl = await getDownloadURL(storageRef);
       }
 
-      // Preparar los datos para Firestore
+      if (!userId) {
+        throw new Error("User not authenticated");
+      }
+
+      // Preparar los datos de un nuevo flat para Firestore
       const flatData = {
         ...values,
         imageUrl,
         createdAt: new Date(),
-        userId: "rt50jpdpEIOyt283H7E6", // Reemplaza esto con el ID del usuario
+        userId,
+      };
+      // Preparar los datos de un nuevo favorite para Firestore
+      const favoriteData = {
+        userId,
       };
 
       // Usar la función createFlat para añadir el documento a Firestore
       const flatId = await createFlat(flatData);
       console.log("Flat created successfully with ID:", flatId);
+
+      // Usar la función createFavorite para añadir el documento a Firestore
+      const favoriteId = await creatFavorite(favoriteData);
+      console.log("Favorite created successfully with ID:", favoriteId);
 
       // Mostrar el mensaje de éxito
       setShowSuccessMessage(true);
@@ -119,7 +134,7 @@ function FlatForm() {
       }, 2000);
     } catch (error) {
       console.error("Error adding flat: ", error);
-      // Aquí puedes manejar el error, por ejemplo, mostrando un mensaje al usuario
+      // Mostrar el mensaje de error al usuario
     }
 
     setSubmitting(false);
@@ -257,7 +272,7 @@ function FlatForm() {
               </Form>
             )}
           </Formik>
-          <FooterFrom
+          <FooterForm
             message="Back to listings"
             linkText="View Listings"
             to="/home"
