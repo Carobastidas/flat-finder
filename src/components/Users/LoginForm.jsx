@@ -1,23 +1,11 @@
-//Componente de formulario de login
-
-import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik, Form } from "formik";
-import { auth } from "../../config/firebase";
-import {
-  signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
-
-import { HeaderForm } from "../Commons/HeaderForm";
-import { FooterForm } from "../Commons/FooterForm";
 import { FormField } from "../Commons/FormField";
 import { ButtonPrimaryForm } from "../Commons/ButtonPrimaryForm";
+import { HeaderForm } from "../Commons/HeaderForm";
+import { FooterForm } from "../Commons/FooterForm";
 
-function LoginForm() {
-  const navigate = useNavigate();
-
+function LoginForm({ onLogin, onLoginWithGoogle }) {
   // Esquema de validación con Yup
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -33,23 +21,8 @@ function LoginForm() {
     password: "",
   };
 
-  const handleSubmit = async (values, { setSubmitting }) => {
-    try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
-      navigate("/home");
-      console.log("User logged in successfully");
-    } catch (error) {
-      console.error("Error logging in:", error);
-      // Aquí puedes mostrar un mensaje de error al usuario
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleLoginWithGoogle = async () => {
-    const googleProvider = new GoogleAuthProvider();
-    await signInWithPopup(auth, googleProvider);
-    navigate("/home");
+  const handleSubmit = (values, { setSubmitting }) => {
+    onLogin(values.email, values.password).finally(() => setSubmitting(false));
   };
 
   return (
@@ -98,7 +71,7 @@ function LoginForm() {
           </Formik>
           <div className="mb-6">
             <button
-              onClick={handleLoginWithGoogle}
+              onClick={onLoginWithGoogle}
               type="button"
               className="transition-colors duration-300 ease-in-out w-full rounded bg-white pt-2 pb-3 text-indigo-500 border border-indigo-300 hover:bg-indigo-400 hover:text-white focus:outline-none"
             >
