@@ -25,7 +25,6 @@ function LoginPage() {
       navigate("/home");
     } catch (error) {
       console.error("Error logging in:", error);
-      // Aquí puedes mostrar un mensaje de error al usuario
     }
   };
 
