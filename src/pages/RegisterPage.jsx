@@ -32,6 +32,8 @@ function RegisterPage() {
     email: "",
     password: "",
     confirmPassword: "",
+    userRole: "user",
+    favorites: [],
   };
 
   const handleSubmit = async (values, { setSubmitting }) => {
@@ -49,6 +51,8 @@ function RegisterPage() {
         name: values.name,
         lastname: values.lastname,
         email: values.email,
+        userRole: values.userRole,
+        favorites: values.favorites,
         uid: user.uid,
       });
       navigate("/home");
