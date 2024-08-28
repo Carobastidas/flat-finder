@@ -9,18 +9,18 @@ import {
   query,
   updateDoc,
   where,
+  arrayUnion,
+  arrayRemove,
 } from "firebase/firestore";
 import { db } from "../config/firebase";
 
 // Vamos a definir el nombre la coleccion que vamos a utilizar de esa DB
 const collectionName = "users";
 const collectionFlats = "flats";
-const collectionFavorites = "favorites";
 
 // Vamos a definir la referencia a la coleccion que vamos a utilizar
 const usersColletionRef = collection(db, collectionName);
 const flatsColletionRef = collection(db, collectionFlats);
-const favoritesCollectionRef = collection(db, collectionFavorites);
 
 // Lectura de datos para los usuarios
 export const getUsers = async () => {
@@ -36,13 +36,6 @@ export const getFlats = async () => {
   return flats;
 };
 
-// Lectura de datos para lod favotites
-export const getFavorites = async () => {
-  const data = await getDocs(favoritesCollectionRef);
-  const favorites = data.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  return favorites;
-};
-
 // Creacion de datos de usuario
 export const createUser = async (user) => {
   await addDoc(usersColletionRef, user);
@@ -52,11 +45,6 @@ export const createUser = async (user) => {
 export const createFlat = async (flat) => {
   const docRef = await addDoc(flatsColletionRef, flat);
   return docRef.id;
-};
-
-// Creacion de datos de un favorite
-export const creatFavorite = async (favorite) => {
-  await addDoc(favoritesCollectionRef, favorite);
 };
 
 // Obtener un flat por su ID
