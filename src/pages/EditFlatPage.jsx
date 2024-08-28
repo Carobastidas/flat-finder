@@ -1,197 +1,72 @@
-//Pagina para editar la informacion del flat
-import { ButtonPrimaryForm } from "../components/Commons/ButtonPrimaryForm";
-import { FooterForm } from "../components/Commons/FooterForm";
-import { HeaderForm } from "../components/Commons/HeaderForm";
+/* import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../services/firebase";
+import { FlatForm } from "../components/Flats/FlatForm"; // Ajusta la ruta según tu estructura */
 
 function EditFlatPage() {
-  return (
-    <>
-      <div className="flex min-h-screen justify-center bg-gray-100 font-sans bg-cover">
-        <div className="container rounded my-auto max-w-md border-2 border-gray-200 bg-white p-3">
-          <HeaderForm
-            title="Update Flat"
-            description="Edita los datos de tu flat"
-          />
-          <div className="m-6">
-            <form className="mb-4">
-              <div className="relative">
-                <div className="flex justify-center items-center gap-1">
-                  <input
-                    type="file"
-                    id="image-input"
-                    accept="image/*"
-                    className="hidden"
-                  />
-                  <img
-                    id="image-user"
-                    src="https://images.pexels.com/photos/7147366/pexels-photo-7147366.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                    alt="Imagen cargada"
-                    className="w-full rounded mb-1"
-                  />
-                </div>
-                <label
-                  htmlFor="image-input"
-                  className="absolute top-1 right-1 w-[]100px rounded bg-indigo-500 p-2 text-white duration-100 ease-in-out hover:bg-indigo-600 focus:outline-none text-center"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                    />
-                  </svg>
-                </label>
+  /* const { flatId } = useParams(); // ID del flat que se va a editar
+  const [flatData, setFlatData] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-                <span hidden id="image-error">
-                  Cargar la imagen de tu inmueble
-                </span>
-              </div>
-              <div className="flex gap-2">
-                <div className="mb-4">
-                  <label
-                    htmlFor="city"
-                    className="mb-1 block text-sm text-gray-600"
-                  >
-                    City
-                  </label>
-                  <input
-                    type="text"
-                    name="city"
-                    id="name"
-                    placeholder="Your city"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label
-                    htmlFor="street-name"
-                    className="mb-1 block text-sm text-gray-600"
-                  >
-                    Street Name
-                  </label>
-                  <input
-                    type="text"
-                    name="street-name"
-                    id="street-name"
-                    placeholder="Your street name"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
-                  />
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <div className="mb-4">
-                  <label
-                    htmlFor="number"
-                    className="mb-1 block text-sm text-gray-600"
-                  >
-                    Street number
-                  </label>
-                  <input
-                    type="number"
-                    name="number"
-                    id="number"
-                    placeholder="Your number"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label
-                    htmlFor="area"
-                    className="mb-1 block text-sm text-gray-600"
-                  >
-                    Area size
-                  </label>
-                  <input
-                    type="number"
-                    name="area"
-                    id="area"
-                    placeholder="Your Area size"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
-                  />
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <div className="mb-4">
-                  <label
-                    htmlFor="yaer"
-                    className="mb-1 block text-sm text-gray-600"
-                  >
-                    Year build
-                  </label>
-                  <input
-                    type="number"
-                    name="yaer"
-                    id="yaer"
-                    placeholder="Your yaer"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
-                  />
-                </div>
-                <div className="flex justify-center">
-                  <label
-                    htmlFor="ac"
-                    className="flex items-center cursor-pointer"
-                  >
-                    Has AC:
-                    <input
-                      id="ac"
-                      type="checkbox"
-                      name="ac"
-                      className="sr-only peer"
-                    />
-                    <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-indigo-300 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600 mx-2"></div>
-                  </label>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <div className="mb-4">
-                  <label
-                    htmlFor="rent"
-                    className="mb-1 block text-sm text-gray-600"
-                  >
-                    Rent price
-                  </label>
-                  <input
-                    type="number"
-                    name="rent"
-                    id="rent"
-                    placeholder="Your rent"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label
-                    htmlFor="date"
-                    className="mb-1 block text-sm text-gray-600"
-                  >
-                    Date
-                  </label>
-                  <input
-                    type="date"
-                    name="date"
-                    id="date"
-                    placeholder="Your date size"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-300 focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-100"
-                  />
-                </div>
-              </div>
-              <ButtonPrimaryForm text="Update flat" />
-              <FooterForm
-                message="Don't have an account yet?"
-                linkText="all flats"
-              />
-            </form>
-          </div>
-        </div>
+  useEffect(() => {
+    const fetchFlatData = async () => {
+      try {
+        const flatDocRef = doc(db, "flats", flatId);
+        const flatDoc = await getDoc(flatDocRef);
+
+        if (flatDoc.exists()) {
+          setFlatData(flatDoc.data());
+          // Si tienes una URL de imagen, ajusta esta línea
+          setImageUrl(flatDoc.data().imageUrl || "");
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.error("Error fetching flat data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFlatData();
+  }, [flatId]);
+
+  const handleSubmit = async (values, { setSubmitting }) => {
+    try {
+      const flatDocRef = doc(db, "flats", flatId);
+      await updateDoc(flatDocRef, {
+        ...values,
+        imageUrl: imageUrl, // Si manejas la URL de la imagen
+      });
+      navigate("/home"); // Redirige después de la actualización
+    } catch (error) {
+      console.error("Error updating flat:", error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading) return <div>Loading...</div>; */
+
+  return {
+    /* <div className="flex min-h-screen justify-center bg-gray-100 font-sans">
+      <div className="container rounded my-auto max-w-md border-2 border-gray-200 bg-white p-3">
+        <FlatForm
+          initialValues={flatData}
+          imageUrl={imageUrl}
+          handleImageChange={(file) => {
+            const reader = new FileReader();
+            reader.onload = (e) => setImageUrl(e.target.result);
+            reader.readAsDataURL(file);
+          }}
+          handleSubmit={handleSubmit}
+        />
       </div>
-    </>
-  );
+    </div> */
+  };
 }
 
 export { EditFlatPage };
