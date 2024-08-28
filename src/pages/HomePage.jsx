@@ -1,55 +1,62 @@
 import { useState, useEffect } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../config/firebase.js";
 import { Navbar } from "../components/Commons/Navbar.jsx";
 import { FlatItem } from "../components/Flats/FlatItem.jsx";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFlats, getUserById, getUsers } from "../services/firebase";
 
 function HomePage() {
   const [flats, setFlats] = useState([]);
-  const [user, setUser] = useState(null);
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchFlats = async () => {
+      setLoading(true);
       try {
-        const flatsCollection = collection(db, "flats");
-        const flatsSnapshot = await getDocs(flatsCollection);
-        const flatsList = flatsSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-          url: doc.data().imageUrl,
-        }));
-
+        const flatsList = await getFlats();
         setFlats(flatsList);
+        console.log("----->", flatsList);
       } catch (error) {
+        setError("Error al obtener los pisos.");
         console.error("Error al obtener los pisos:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchFlats();
   }, []);
 
-  useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
+  const handleFavoriteToggle = async () => {
+    const users = await getUsers();
+    const usersIds = users.map((user) => user.uid);
+    console.log(usersIds);
+  };
 
-    return () => unsubscribe();
-  }, []);
+  if (loading) {
+    return <div className="loading">Cargando...</div>;
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
 
   return (
     <>
       <Navbar />
       <section className="flex flex-wrap justify-center gap-4 mt-24 mr-4 ml-4 mb-16">
-        {user && (
-          <div className="w-full text-center mb-8">
-            <h1>Bienvenido, {user.displayName} </h1>
-          </div>
+        {flats.length > 0 ? (
+          flats.map((flat) => (
+            <FlatItem
+              key={flat.id}
+              {...flat}
+              /* isFavorite={favorites.has(flat.id)} */
+              onFavoriteToggle={() => handleFavoriteToggle(flat.id)}
+            />
+          ))
+        ) : (
+          <div className="no-flats">No hay pisos disponibles</div>
         )}
-        {flats.map((flat) => (
-          <FlatItem key={flat.id} {...flat} />
-        ))}
       </section>
     </>
   );
