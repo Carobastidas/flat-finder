@@ -1,15 +1,9 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { auth } from "../../config/firebase";
-
 import { FormField } from "../Commons/FormField";
 import { ButtonPrimaryForm } from "../Commons/ButtonPrimaryForm";
 import { HeaderForm } from "../Commons/HeaderForm";
 import { FooterForm } from "../Commons/FooterForm";
-import { createFlat, creatFavorite } from "../../services/firebase";
 
 const validationSchema = Yup.object({
   city: Yup.string().required("City is required"),
@@ -31,115 +25,17 @@ const validationSchema = Yup.object({
   availableDate: Yup.date()
     .required("Available date is required")
     .test("is-future", "Available date must be in the future", (value) => {
-      // Verifica si la fecha es mayor que la fecha actual
       return value && new Date(value) > new Date();
     }),
 });
 
-function FlatForm() {
-  const navigate = useNavigate();
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
-  const [imageFile, setImageFile] = useState(null);
-
-  const user = auth.currentUser;
-  const userId = user ? user.uid : null;
-
-  useEffect(() => {
-    // Cargar la imagen por defecto desde Firebase Storage
-    const loadDefaultImage = async () => {
-      const storage = getStorage();
-      const defaultImageRef = ref(storage, "default-images/default-flat.png");
-      try {
-        const url = await getDownloadURL(defaultImageRef);
-        setImageUrl(url);
-      } catch (error) {
-        console.error("Error loading default image:", error);
-        // Si falla, usamos una URL de respaldo
-        setImageUrl(
-          "https://via.placeholder.com/400x300?text=Default+Flat+Image"
-        );
-      }
-    };
-
-    loadDefaultImage();
-  }, []);
-
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onload = (e) => setImageUrl(e.target.result);
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const initialValues = {
-    city: "",
-    streetName: "",
-    streetNumber: "",
-    areaSize: "",
-    yearBuilt: "",
-    hasAC: false,
-    rentPrice: "",
-    availableDate: "",
-  };
-
-  const handleSubmit = async (values, { setSubmitting }) => {
-    try {
-      const storage = getStorage();
-
-      // Subir la imagen a Firebase Storage
-      let finalImageUrl = imageUrl;
-      if (imageFile) {
-        const storageRef = ref(
-          storage,
-          `flats/${Date.now()}_${imageFile.name}`
-        );
-        await uploadBytes(storageRef, imageFile);
-        finalImageUrl = await getDownloadURL(storageRef);
-      }
-
-      if (!userId) {
-        throw new Error("User not authenticated");
-      }
-
-      // Preparar los datos de un nuevo flat para Firestore
-      const flatData = {
-        ...values,
-        imageUrl,
-        createdAt: new Date(),
-        userId,
-      };
-      // Preparar los datos de un nuevo favorite para Firestore
-      const favoriteData = {
-        userId,
-      };
-
-      // Usar la función createFlat para añadir el documento a Firestore
-      const flatId = await createFlat(flatData);
-      console.log("Flat created successfully with ID:", flatId);
-
-      // Usar la función createFavorite para añadir el documento a Firestore
-      const favoriteId = await creatFavorite(favoriteData);
-      console.log("Favorite created successfully with ID:", favoriteId);
-
-      // Mostrar el mensaje de éxito
-      setShowSuccessMessage(true);
-
-      // Esperar 2 segundos antes de redirigir
-      setTimeout(() => {
-        navigate("/home");
-      }, 2000);
-    } catch (error) {
-      console.error("Error adding flat: ", error);
-      // Mostrar el mensaje de error al usuario
-    }
-
-    setSubmitting(false);
-  };
-
+function FlatForm({
+  initialValues,
+  imageUrl,
+  showSuccessMessage,
+  handleImageChange,
+  handleSubmit,
+}) {
   return (
     <div className="flex min-h-screen justify-center bg-gray-100 font-sans">
       <div className="container rounded my-auto max-w-md border-2 border-gray-200 bg-white p-3">
@@ -148,7 +44,7 @@ function FlatForm() {
           description="Add a new flat to your listings"
         />
         <div className="m-6">
-          {showSuccessMessage && ( // Crear el componente y enviar por props si es error o de sucess
+          {showSuccessMessage && (
             <div className="mb-4 p-2 bg-green-100 text-green-700 rounded">
               Flat created successfully! Redirecting...
             </div>
@@ -167,7 +63,7 @@ function FlatForm() {
                       id="image-input"
                       accept="image/*"
                       className="hidden"
-                      onChange={handleImageChange}
+                      onChange={(e) => handleImageChange(e.target.files[0])}
                     />
                     <img
                       id="image-user"
