@@ -3,10 +3,12 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { NavbarLinks } from "./NavbarLinks";
 import { getAuth, signOut } from "firebase/auth";
+import { useAuth } from "../../context/authContext";
 
 function Navbar({ onClick }) {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -29,16 +31,18 @@ function Navbar({ onClick }) {
           to="/"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
-          <img
-            src="https://react.dev/favicon-32x32.png"
-            className="h-8"
-            alt="Logo"
-          />
+          <img src="../../assets/logo.svg" className="h-8" alt="Logo" />
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
             RentFlat
           </span>
         </Link>
-        <div className="flex gap-2 md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+        <div className="flex gap-2 justify-center items-center px-1 md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+          {currentUser && <span> {currentUser.displayName}</span>}
+          <img
+            className="w-10 h-10 object-cover rounded-full"
+            src="https://avatars.githubusercontent.com/u/169313485?v=4"
+            alt=""
+          />
           <button
             onClick={handleLogout}
             type="button"
@@ -95,17 +99,13 @@ function Navbar({ onClick }) {
           id="navbar-sticky"
         >
           <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:gap-3 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-            <NavbarLinks to="/" name="Login" />
             <NavbarLinks to="/home" name="Home" />
-            <NavbarLinks to="/register" name="Register" />
             <NavbarLinks to="/new-flat" name="New Flat" />
             <NavbarLinks to="/update-profile" name="Update Profile" />
-            <NavbarLinks to="/flat-details" name="Flat Details" />
             <NavbarLinks to="/my-flats" name="My Flats" />
             <NavbarLinks to="/favourites" name="Favourites" />
-            <NavbarLinks to="/all-users" name="Al Users" />
+            <NavbarLinks to="/all-users" name="Users" />
             <NavbarLinks to="/profile" name="Profile" />
-            <NavbarLinks to="/edit-flat" name="Edit Flat" />
           </ul>
         </div>
       </div>
