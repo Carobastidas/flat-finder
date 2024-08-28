@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
-import { auth } from "./config/firebase";
-
 import { Route, Routes } from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/authContext";
+
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { HomePage } from "./pages/HomePage";
@@ -13,38 +12,40 @@ import { FavouritesPage } from "./pages/FavouritesPage";
 import { MyFlatsPage } from "./pages/MyFlatsPage";
 import { AllUsersPage } from "./pages/AllUsersPage";
 import { ProfilePage } from "./pages/ProfilePage";
+import { PrivateRoute } from "./components/Commons/PrivateRoute";
 
-function App() {
-  const [currentUser, setCurrentUser] = useState(null);
+const AppRoutes = () => {
+  const { currentUser } = useAuth();
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setCurrentUser(user);
-    });
-
-    return unsubscribe;
-  }, []);
   return (
-    <>
+    <Routes>
       {currentUser ? (
-        <Routes>
+        <Route element={<PrivateRoute />}>
           <Route path="/home" element={<HomePage />} />
           <Route path="/new-flat" element={<NewFlatPage />} />
           <Route path="/update-profile" element={<UpdateProfilePage />} />
-          <Route path="/edit-flat" element={<EditFlatPage />} />
-          <Route path="/flat-details" element={<FlatDetailsPage />} />
+          <Route path="/edit/:id" element={<EditFlatPage />} />
+          <Route path="/flat/:id" element={<FlatDetailsPage />} />
           <Route path="/favourites" element={<FavouritesPage />} />
           <Route path="/my-flats" element={<MyFlatsPage />} />
           <Route path="/all-users" element={<AllUsersPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-        </Routes>
+        </Route>
       ) : (
-        <Routes>
+        <>
           <Route path="/" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-        </Routes>
+        </>
       )}
-    </>
+    </Routes>
+  );
+};
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
   );
 }
 
