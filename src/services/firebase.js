@@ -14,36 +14,69 @@ import {
 } from "firebase/firestore";
 import { db } from "../config/firebase";
 
-// Vamos a definir el nombre la coleccion que vamos a utilizar de esa DB
+// Nombres de las colecciones en Firestore
 const collectionName = "users";
 const collectionFlats = "flats";
 
-// Vamos a definir la referencia a la coleccion que vamos a utilizar
-const usersColletionRef = collection(db, collectionName);
-const flatsColletionRef = collection(db, collectionFlats);
+// Referencias a las colecciones en Firestore
+const usersCollectionRef = collection(db, collectionName);
+const flatsCollectionRef = collection(db, collectionFlats);
 
-// Lectura de datos para los usuarios
+// Funciones CRUD para la colección de usuarios
+
+// Obtener todos los usuarios
 export const getUsers = async () => {
-  const data = await getDocs(usersColletionRef);
+  const data = await getDocs(usersCollectionRef);
   const users = data.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   return users;
 };
 
-// Lectura de datos para los flats
+// Crear un nuevo usuario
+export const createUser = async (user) => {
+  await addDoc(usersCollectionRef, user);
+};
+
+// Obtener un usuario por su ID
+export const getUserById = async (id) => {
+  const userRef = doc(db, collectionName, id);
+  const user = await getDoc(userRef);
+  return user.exists() ? { id: user.id, ...user.data() } : null;
+};
+
+// Obtener un usuario por su nombre
+export const getUserByName = async (name) => {
+  const queryData = query(usersCollectionRef, where("name", "==", name));
+  const querySnapShot = await getDocs(queryData);
+  const users = querySnapShot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+  return users;
+};
+
+// Actualizar los datos de un usuario
+export const updateUser = async (id, updatedUserData) => {
+  const userRef = doc(db, collectionName, id);
+  await updateDoc(userRef, updatedUserData);
+};
+
+// Eliminar un usuario por su ID
+export const deleteUser = async (id) => {
+  await deleteDoc(doc(db, collectionName, id));
+};
+
+// Funciones CRUD para la colección de flats
+
+// Obtener todos los flats
 export const getFlats = async () => {
-  const data = await getDocs(flatsColletionRef);
+  const data = await getDocs(flatsCollectionRef);
   const flats = data.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   return flats;
 };
 
-// Creacion de datos de usuario
-export const createUser = async (user) => {
-  await addDoc(usersColletionRef, user);
-};
-
-// Creacion de datos de flat
+// Crear un nuevo flat
 export const createFlat = async (flat) => {
-  const docRef = await addDoc(flatsColletionRef, flat);
+  const docRef = await addDoc(flatsCollectionRef, flat);
   return docRef.id;
 };
 
@@ -54,50 +87,24 @@ export const getFlatById = async (id) => {
   return flat.exists() ? { id: flat.id, ...flat.data() } : null;
 };
 
-// Vamos a definir la funcion de actualizacion de datos
-export const updateUser = async (id, updatedUserData) => {
-  const userRef = doc(db, collectionName, id);
-  await updateDoc(userRef, updatedUserData);
-};
-
-// Atualizar un flat
-export const updateFlat = async (id, updatedFlatData) => {
-  const flatRef = doc(db, collectionFlats, id);
-  await updateDoc(flatRef, updatedFlatData);
-};
-
-// Eiminar un flat
-export const deleteFlat = async (id) => {
-  await deleteDoc(doc(db, collectionFlats, id));
-};
-
-export const getUserById = async (id) => {
-  const userRef = doc(db, collectionName, id);
-  const user = await getDoc(userRef);
-  return user.data();
-};
-
-// Eiminar un usuario
-export const deleteUser = async (id) => {
-  await deleteDoc(doc(db, collectionName, id));
-};
-
-export const getUserByName = async (name) => {
-  const queryData = query(usersColletionRef, where("name", "==", name));
-  const querySnapShot = await getDocs(queryData);
-  const users = querySnapShot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  }));
-  return users;
-};
-
+// Obtener flats por el ID del propietario (userId)
 export const getFlatsByUserId = async (userId) => {
-  const queryData = query(flatsColletionRef, where("userId", "==", userId));
+  const queryData = query(flatsCollectionRef, where("userId", "==", userId));
   const querySnapShot = await getDocs(queryData);
   const flats = querySnapShot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   }));
   return flats;
+};
+
+// Actualizar los datos de un flat
+export const updateFlat = async (id, updatedFlatData) => {
+  const flatRef = doc(db, collectionFlats, id);
+  await updateDoc(flatRef, updatedFlatData);
+};
+
+// Eliminar un flat por su ID
+export const deleteFlat = async (id) => {
+  await deleteDoc(doc(db, collectionFlats, id));
 };

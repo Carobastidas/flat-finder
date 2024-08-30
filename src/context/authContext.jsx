@@ -1,10 +1,16 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import {
   addDoc,
   collection,
   onSnapshot,
-  orderBy,
   query,
+  where,
 } from "firebase/firestore";
 import { db, auth } from "../config/firebase";
 
@@ -17,24 +23,26 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
-      if (user) {
-        loadMessages();
-      } else {
-        setMessages([]);
-      }
     });
 
     return unsubscribe;
   }, []);
 
-  const loadMessages = () => {
+  const loadMessages = useCallback((flatId) => {
     const messagesCollection = collection(db, "messages");
-    const messagesQuery = query(messagesCollection, orderBy("date"));
+    const messagesQuery = query(
+      messagesCollection,
+      where("flatId", "==", flatId)
+    );
+
     onSnapshot(messagesQuery, (snapshot) => {
-      const messagesList = snapshot.docs.map((item) => item.data());
+      let messagesList = snapshot.docs.map((item) => item.data());
+
+      messagesList = messagesList.sort((a, b) => a.date - b.date);
+
       setMessages(messagesList);
     });
-  };
+  }, []);
 
   const addMessages = async (uidMessage, textInput, flatId) => {
     try {
@@ -50,8 +58,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  console.log("Cuantas veces se renderiza este log??????????");
+
   return (
-    <AuthContext.Provider value={{ currentUser, messages, addMessages }}>
+    <AuthContext.Provider
+      value={{ currentUser, messages, addMessages, loadMessages }}
+    >
       {children}
     </AuthContext.Provider>
   );
