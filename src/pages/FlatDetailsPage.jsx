@@ -9,7 +9,7 @@ import { db } from "../config/firebase";
 import { useAuth } from "../context/authContext";
 
 function FlatDetailsPage() {
-  const { id } = useParams();
+  const { id } = useParams(); // id del flat
   const { currentUser } = useAuth();
   const [isOwner, setIsOwner] = useState(false);
   const [flat, setFlat] = useState(null);
@@ -40,7 +40,7 @@ function FlatDetailsPage() {
   }, [id, currentUser]);
 
   if (!currentUser) {
-    return <div>Cargando...</div>; // Mostrar algún mensaje o redirigir
+    return <div>Cargando...</div>;
   }
 
   return (
@@ -55,9 +55,9 @@ function FlatDetailsPage() {
           flat && <FlatView flat={flat} isOwner={isOwner} />
         )}
         <p>uid del usuario: {currentUser.uid}</p>
-        <p>Nombre del usuario logueado:{currentUser.displayName}</p>
+        <p>Nombre del usuario logueado: {currentUser.displayName}</p>
         <MessageList />
-        <MessageForm />
+        <MessageForm flatId={id} /> {/* Pasa el flatId aquí */}
       </section>
     </>
   );
