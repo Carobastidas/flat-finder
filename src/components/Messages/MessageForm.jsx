@@ -4,7 +4,7 @@ import { useAuth } from "../../context/authContext";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-function MessageForm() {
+function MessageForm({ flatId }) {
   const { currentUser, addMessages } = useAuth();
 
   const formik = useFormik({
@@ -21,7 +21,7 @@ function MessageForm() {
         console.log("mensaje vacío");
         return;
       }
-      addMessages(currentUser.uid, values.message);
+      addMessages(currentUser.uid, values.message, flatId);
       formik.resetForm();
       console.log("Submitted message:", values.message);
     },

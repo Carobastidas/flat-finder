@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
       if (user) {
         loadMessages();
       } else {
-        setMessages([]); // Opcional: limpiar mensajes si el usuario no está autenticado
+        setMessages([]);
       }
     });
 
@@ -36,13 +36,14 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
-  const addMessages = async (uidMessage, textInput) => {
+  const addMessages = async (uidMessage, textInput, flatId) => {
     try {
       const messagesCollection = collection(db, "messages");
       await addDoc(messagesCollection, {
         date: Date.now(),
         text: textInput,
         uid: uidMessage,
+        flatId: flatId,
       });
     } catch (error) {
       console.error("Error adding message:", error);
