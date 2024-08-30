@@ -5,7 +5,7 @@ import { LoginForm } from "../components/Users/LoginForm";
 import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
-  signInWithRedirect,
+  signInWithPopup,
 } from "firebase/auth";
 import { auth } from "../config/firebase";
 
@@ -31,11 +31,10 @@ function LoginPage() {
   const handleLoginWithGoogle = async () => {
     const googleProvider = new GoogleAuthProvider();
     try {
-      await signInWithRedirect(auth, googleProvider);
+      await signInWithPopup(auth, googleProvider);
       navigate("/home");
     } catch (error) {
       console.error("Error logging in with Google:", error);
-      // Aquí puedes mostrar un mensaje de error al usuario
     }
   };
 
