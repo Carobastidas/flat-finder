@@ -22,7 +22,7 @@ const collectionFlats = "flats";
 const usersCollectionRef = collection(db, collectionName);
 const flatsCollectionRef = collection(db, collectionFlats);
 
-// Funciones CRUD para la colección de usuarios
+// >>>>>> Funciones CRUD para la colección de usuarios
 
 // Obtener todos los usuarios
 export const getUsers = async () => {
@@ -41,6 +41,17 @@ export const getUserById = async (id) => {
   const userRef = doc(db, collectionName, id);
   const user = await getDoc(userRef);
   return user.exists() ? { id: user.id, ...user.data() } : null;
+};
+
+// Obtener un usuario por su uid
+export const getUserByUid = async (uid) => {
+  const queryData = query(usersCollectionRef, where("uid", "==", uid));
+  const querySnapShot = await getDocs(queryData);
+  const userUid = querySnapShot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+  return userUid;
 };
 
 // Obtener un usuario por su nombre
@@ -65,7 +76,7 @@ export const deleteUser = async (id) => {
   await deleteDoc(doc(db, collectionName, id));
 };
 
-// Funciones CRUD para la colección de flats
+// >>>>>> Funciones CRUD para la colección de flats
 
 // Obtener todos los flats
 export const getFlats = async () => {
