@@ -13,16 +13,30 @@ import {
   where,
 } from "firebase/firestore";
 import { db, auth } from "../config/firebase";
+import { getUserByUid } from "../services/firebase";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
+  const [userDetails, setUserDetails] = useState(null);
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       setCurrentUser(user);
+
+      if (user) {
+        try {
+          const details = await getUserByUid(user.uid);
+          setUserDetails(details.length > 0 ? details[0] : null);
+        } catch (error) {
+          console.error("Error fetching user details:", error);
+          setUserDetails(null);
+        }
+      } else {
+        setUserDetails(null);
+      }
     });
 
     return unsubscribe;
@@ -58,11 +72,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  console.log("Cuantas veces se renderiza este log??????????");
-
   return (
     <AuthContext.Provider
-      value={{ currentUser, messages, addMessages, loadMessages }}
+      value={{ currentUser, userDetails, messages, addMessages, loadMessages }}
     >
       {children}
     </AuthContext.Provider>
