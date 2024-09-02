@@ -1,72 +1,113 @@
-/* import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../services/firebase";
-import { FlatForm } from "../components/Flats/FlatForm"; // Ajusta la ruta según tu estructura */
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { getStorage, ref, getDownloadURL, uploadBytes } from "firebase/storage";
+import { useAuth } from "../context/authContext";
+import { getFlatById, updateFlat } from "../services/firebase";
+import { FlatForm } from "../components/Flats/FlatForm";
 
 function EditFlatPage() {
-  /* const { flatId } = useParams(); // ID del flat que se va a editar
-  const [flatData, setFlatData] = useState(null);
-  const [imageUrl, setImageUrl] = useState("");
-  const [loading, setLoading] = useState(true);
+  const { id } = useParams();
   const navigate = useNavigate();
+  const [initialValues, setInitialValues] = useState(null);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+
+  const { currentUser } = useAuth();
+  const userId = currentUser ? currentUser.uid : null;
 
   useEffect(() => {
     const fetchFlatData = async () => {
       try {
-        const flatDocRef = doc(db, "flats", flatId);
-        const flatDoc = await getDoc(flatDocRef);
+        const flatData = await getFlatById(id);
+        if (flatData) {
+          const availableDate = new Date(flatData.availableDate);
+          const formattedDate = !isNaN(availableDate.getTime())
+            ? availableDate.toISOString().split("T")[0]
+            : "";
 
-        if (flatDoc.exists()) {
-          setFlatData(flatDoc.data());
-          // Si tienes una URL de imagen, ajusta esta línea
-          setImageUrl(flatDoc.data().imageUrl || "");
+          setInitialValues({
+            city: flatData.city,
+            streetName: flatData.streetName,
+            streetNumber: flatData.streetNumber,
+            areaSize: flatData.areaSize,
+            yearBuilt: flatData.yearBuilt,
+            hasAC: flatData.hasAC,
+            rentPrice: flatData.rentPrice,
+            availableDate: formattedDate,
+          });
+          setImageUrl(flatData.imageUrl);
         } else {
-          console.log("No such document!");
+          console.error("Flat not found");
         }
       } catch (error) {
         console.error("Error fetching flat data:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchFlatData();
-  }, [flatId]);
+  }, [id, navigate]);
 
-  const handleSubmit = async (values, { setSubmitting }) => {
-    try {
-      const flatDocRef = doc(db, "flats", flatId);
-      await updateDoc(flatDocRef, {
-        ...values,
-        imageUrl: imageUrl, // Si manejas la URL de la imagen
-      });
-      navigate("/home"); // Redirige después de la actualización
-    } catch (error) {
-      console.error("Error updating flat:", error);
-    } finally {
-      setSubmitting(false);
+  const handleImageChange = (file) => {
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onload = (e) => setImageUrl(e.target.result);
+      reader.readAsDataURL(file);
     }
   };
 
-  if (loading) return <div>Loading...</div>; */
+  const handleSubmit = async (values, { setSubmitting }) => {
+    try {
+      const storage = getStorage();
 
-  return {
-    /* <div className="flex min-h-screen justify-center bg-gray-100 font-sans">
-      <div className="container rounded my-auto max-w-md border-2 border-gray-200 bg-white p-3">
-        <FlatForm
-          initialValues={flatData}
-          imageUrl={imageUrl}
-          handleImageChange={(file) => {
-            const reader = new FileReader();
-            reader.onload = (e) => setImageUrl(e.target.result);
-            reader.readAsDataURL(file);
-          }}
-          handleSubmit={handleSubmit}
-        />
-      </div>
-    </div> */
+      let finalImageUrl = imageUrl;
+      if (imageFile) {
+        const storageRef = ref(
+          storage,
+          `flats/${Date.now()}_${imageFile.name}`
+        );
+        await uploadBytes(storageRef, imageFile);
+        finalImageUrl = await getDownloadURL(storageRef);
+      }
+
+      if (!userId) {
+        throw new Error("User not authenticated");
+      }
+
+      const updatedFlatData = {
+        ...values,
+        imageUrl: finalImageUrl,
+        updatedAt: new Date(),
+      };
+
+      await updateFlat(id, updatedFlatData);
+      console.log("Flat updated successfully");
+
+      setShowSuccessMessage(true);
+
+      setTimeout(() => navigate("/home"), 2000);
+    } catch (error) {
+      console.error("Error updating flat: ", error);
+    }
+
+    setSubmitting(false);
   };
+
+  if (!initialValues) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <FlatForm
+      initialValues={initialValues}
+      imageUrl={imageUrl}
+      showSuccessMessage={showSuccessMessage}
+      handleImageChange={handleImageChange}
+      handleSubmit={handleSubmit}
+      titleButton="Update flat"
+    />
+  );
 }
 
 export { EditFlatPage };
