@@ -13,21 +13,21 @@ function NewFlatPage() {
 
   const { currentUser } = useAuth();
   const userId = currentUser ? currentUser.uid : null;
-  const userName = currentUser ? currentUser.displayName : "Anonymous"; // Nombre del usuario
-  const userEmail = currentUser ? currentUser.email : null; // Email del usuario
+  const userName = currentUser ? currentUser.displayName : "Anonymous";
+  const userEmail = currentUser ? currentUser.email : null;
 
   useEffect(() => {
     const loadDefaultImage = async () => {
       const storage = getStorage();
       const defaultImageRef = ref(storage, "default-images/default-flat.png");
+      const defaultImageUrl =
+        "https://via.placeholder.com/400x250?text=Default+Flat+Image";
       try {
+        setImageUrl(defaultImageUrl);
+      } catch (error) {
         const url = await getDownloadURL(defaultImageRef);
         setImageUrl(url);
-      } catch (error) {
         console.error("Error loading default image:", error);
-        setImageUrl(
-          "https://via.placeholder.com/400x300?text=Default+Flat+Image"
-        );
       }
     };
 
@@ -99,6 +99,7 @@ function NewFlatPage() {
       showSuccessMessage={showSuccessMessage}
       handleImageChange={handleImageChange}
       handleSubmit={handleSubmit}
+      titleButton="Create Flat"
     />
   );
 }
