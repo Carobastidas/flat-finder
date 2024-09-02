@@ -35,6 +35,7 @@ function FlatForm({
   showSuccessMessage,
   handleImageChange,
   handleSubmit,
+  titleButton,
 }) {
   return (
     <div className="flex min-h-screen justify-center bg-gray-100 font-sans">
@@ -164,7 +165,7 @@ function FlatForm({
                   />
                 </div>
 
-                <ButtonPrimaryForm text="Create Flat" type="submit" />
+                <ButtonPrimaryForm text={titleButton} type="submit" />
               </Form>
             )}
           </Formik>
