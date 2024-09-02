@@ -119,3 +119,56 @@ export const updateFlat = async (id, updatedFlatData) => {
 export const deleteFlat = async (id) => {
   await deleteDoc(doc(db, collectionFlats, id));
 };
+
+// Añadir un flat a los favoritos de un usuario
+export const addFlatToFavorites = async (userId, flatId) => {
+  const userRef = doc(db, collectionName, userId);
+  await updateDoc(userRef, {
+    favorites: arrayUnion(flatId),
+  });
+};
+
+// Eliminar un flat de los favoritos de un usuario
+export const removeFlatFromFavorites = async (userId, flatId) => {
+  const userRef = doc(db, collectionName, userId);
+  await updateDoc(userRef, {
+    favorites: arrayRemove(flatId),
+  });
+};
+
+// Obtener los IDs de favoritos de un usuario
+export const getFavoriteIdsOfUser = async (userId) => {
+  try {
+    // Referencia al documento del usuario
+    const userRef = doc(db, "users", userId);
+
+    // Obtiene el documento del usuario
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+      // Obtiene la propiedad 'favorites' del documento
+      const userData = userDoc.data();
+      const favoriteIds = userData.favorites || [];
+
+      return favoriteIds;
+    } else {
+      console.log("No such document!");
+      return [];
+    }
+  } catch (error) {
+    console.error("Error retrieving favorites:", error);
+    return [];
+  }
+};
+
+// Obtener detalles de los flats por una lista de IDs
+export const getFlatsByIds = async (flatIds) => {
+  try {
+    const flatsPromises = flatIds.map((id) => getFlatById(id));
+    const flats = await Promise.all(flatsPromises);
+    return flats.filter((flat) => flat !== null); // Filtra los flats que no se encuentran
+  } catch (error) {
+    console.error("Error retrieving flats by IDs:", error);
+    return [];
+  }
+};
