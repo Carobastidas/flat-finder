@@ -19,7 +19,6 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      {currentUser ? (
         <Route element={<PrivateRoute />}>
           <Route path="/home" element={<HomePage />} />
           <Route path="/new-flat" element={<NewFlatPage />} />
@@ -31,12 +30,8 @@ const AppRoutes = () => {
           <Route path="/all-users" element={<AllUsersPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Route>
-      ) : (
-        <>
           <Route path="/" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-        </>
-      )}
     </Routes>
   );
 };
