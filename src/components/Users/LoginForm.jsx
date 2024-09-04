@@ -4,8 +4,11 @@ import { FormField } from "../Commons/FormField";
 import { ButtonPrimaryForm } from "../Commons/ButtonPrimaryForm";
 import { HeaderForm } from "../Commons/HeaderForm";
 import { FooterForm } from "../Commons/FooterForm";
+import { useState } from "react";
 
-function LoginForm({ onLogin, onLoginWithGoogle }) {
+function LoginForm({ onLogin, onLoginWithGoogle, onResetPassword, errorMessage,setErrorMessage  }) {
+  const [isResetMode, setIsResetMode] = useState(false); // Asegúrate de definir este estado
+
   // Esquema de validación con Yup
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -16,29 +19,40 @@ function LoginForm({ onLogin, onLoginWithGoogle }) {
       .required("Password is required"),
   });
 
+  const resetValidationSchema = Yup.object({
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+  });
+
   const initialValues = {
     email: "",
     password: "",
   };
 
   const handleSubmit = (values, { setSubmitting }) => {
-    onLogin(values.email, values.password).finally(() => setSubmitting(false));
+    if (isResetMode) {
+      onResetPassword(values.email).finally(() => setSubmitting(false));
+    } else {
+      onLogin(values.email, values.password).finally(() => setSubmitting(false));
+    }
   };
 
   return (
     <section className="flex min-h-screen justify-center bg-gray-100 font-sans dark:bg-gray-900 antialiased">
       <div className="container rounded my-auto max-w-md border-2 border-gray-200 p-3 dark:border-gray-700 bg-white dark:bg-gray-900 antialiased">
         <div className="my-6 text-center">
-          <HeaderForm title="Login" paragraph="Login to access your account" />
+          <HeaderForm title={isResetMode ? "Reset Password" : "Login"} paragraph={isResetMode ? "Enter your email to reset your password" : "Login to access your account"} />
         </div>
         <div className="m-6">
           <Formik
             initialValues={initialValues}
-            validationSchema={validationSchema}
+            validationSchema={isResetMode ? resetValidationSchema : validationSchema}
             onSubmit={handleSubmit}
           >
             {({ isSubmitting }) => (
               <Form className="mb-4">
+                {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
                 <FormField
                   type="email"
                   name="email"
@@ -47,37 +61,64 @@ function LoginForm({ onLogin, onLoginWithGoogle }) {
                   label="Email Address"
                 />
 
-                <FormField
-                  type="password"
-                  name="password"
-                  id="password"
-                  placeholder="Your password"
-                  label="Password"
-                />
+                {!isResetMode && (
+                  <FormField
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="Your password"
+                    label="Password"
+                  />
+                )}
 
                 <ButtonPrimaryForm
-                  text="Login"
+                  text={isResetMode ? "Reset Password" : "Login"}
                   type="submit"
                   disabled={isSubmitting}
                 />
 
-                <FooterForm
-                  message="Don't have an account yet?"
-                  linkText="Register"
-                  to="register"
-                />
+                {!isResetMode && (
+                  <a
+                    className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+                    href="#!"
+                    onClick={() => setIsResetMode(true)}
+                  >
+                    Forgot Password?
+                  </a>
+                )}
+
+                {isResetMode && (
+                  <a
+                    className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+                    href="/"
+                    onClick={() => setIsResetMode(false)}
+                  >
+                    Back to Login
+                  </a>
+                )}
+
+                {!isResetMode && (
+                  <FooterForm
+                    message="Don't have an account yet?"
+                    linkText="Register"
+                    to="register"
+                  />
+                )}
               </Form>
             )}
           </Formik>
-          <div className="mb-6">
-            <button
-              onClick={onLoginWithGoogle}
-              type="button"
-              className="transition-colors duration-300 ease-in-out w-full rounded bg-white pt-2 pb-3 text-indigo-500 border border-indigo-300 hover:bg-indigo-400 hover:text-white focus:outline-none"
-            >
-              Login with Google
-            </button>
-          </div>
+
+          {!isResetMode && (
+            <div className="mb-6">
+              <button
+                onClick={onLoginWithGoogle}
+                type="button"
+                className="transition-colors duration-300 ease-in-out w-full rounded bg-white pt-2 pb-3 text-indigo-500 border border-indigo-300 hover:bg-indigo-400 hover:text-white focus:outline-none"
+              >
+                Login with Google
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </section>
