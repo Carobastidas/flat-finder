@@ -40,9 +40,10 @@ function Navbar({ onClick }) {
           {currentUser && <span> {currentUser.displayName}</span>}
           <img
             className="w-10 h-10 object-cover rounded-full"
-            src="https://avatars.githubusercontent.com/u/169313485?v=4"
-            alt=""
+            src={currentUser.photoURL}
+            alt="profile-photo"
           />
+
           <button
             onClick={handleLogout}
             type="button"
