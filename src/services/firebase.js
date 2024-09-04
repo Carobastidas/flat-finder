@@ -174,7 +174,7 @@ export const getFlatsByIds = async (flatIds) => {
 };
 
 export const getUserByEmail = async (email) => {
-  const queryData = query(usersColletionRef, where("email", "==", email));
+  const queryData = query(usersCollectionRef, where("email", "==", email));
   const querySnapShot = await getDocs(queryData);
   const users = querySnapShot.docs.map((doc) => ({
     id: doc.id,
