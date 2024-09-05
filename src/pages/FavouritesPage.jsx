@@ -3,6 +3,7 @@ import { Navbar } from "../components/Commons/Navbar.jsx";
 import { FlatItem } from "../components/Flats/FlatItem.jsx";
 import { useAuth } from "../context/authContext.jsx";
 import { getFavoriteIdsOfUser, getFlatsByIds } from "../services/firebase.js";
+import { deleteFlat, removeFlatFromFavorites } from "../services/firebase.js";
 
 function FavouritesPage() {
   const { userDetails } = useAuth();
@@ -30,6 +31,20 @@ function FavouritesPage() {
     fetchFavoritesOfUser();
   }, [userDetails]);
 
+  const handleDeleteFlat = async (flatId) => {
+    try {
+      // Eliminar flat de la base de datos
+      await deleteFlat(flatId);
+      // Eliminar flat de los favoritos del usuario
+      await removeFlatFromFavorites(userDetails.id, flatId);
+      // Actualizar la lista de flats favoritos en el estado
+      setFavoritesFlats(favoritesFlats.filter((flat) => flat.id !== flatId));
+    } catch (error) {
+      console.error("Error deleting flat:", error);
+      setError("Error deleting flat");
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -52,6 +67,11 @@ function FavouritesPage() {
               ownerName={flat.ownerName}
               ownerEmail={flat.ownerEmail}
               isFavorite={true}
+              onDelete={handleDeleteFlat}
+              displayFavoriteIcon="hidden"
+              displayPencilIcon="hidden"
+              displayTrashIcon="Block"
+              displayHomeIcon="hidden"
             />
           ))
         ) : (

@@ -1,4 +1,9 @@
 import { Link } from "react-router-dom";
+import { HeartIcon as HeartOutline } from "@heroicons/react/24/outline";
+import { HeartIcon as HeartSolid } from "@heroicons/react/24/solid";
+import { PencilIcon } from "@heroicons/react/24/solid";
+import { TrashIcon } from "@heroicons/react/24/solid";
+import { HomeIcon } from "@heroicons/react/24/solid";
 
 function FlatItem({
   id,
@@ -15,6 +20,11 @@ function FlatItem({
   ownerEmail,
   isFavorite,
   onFavoriteToggle,
+  displayFavoriteIcon,
+  displayPencilIcon,
+  displayTrashIcon,
+  displayHomeIcon,
+  onDelete,
 }) {
   return (
     <article className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
@@ -73,21 +83,38 @@ function FlatItem({
           </Link>
 
           <div className="flex gap-4">
-            <svg
-              id="heart"
+            <button
               onClick={onFavoriteToggle}
               aria-label={
                 isFavorite ? "Remove from favorites" : "Add to favorites"
               }
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill={isFavorite ? "red" : "white"}
-              className={`size-6 h-[24px] w-[24px] stroke-gray-900 stroke-2 overflow-visible z-10 ${
-                isFavorite ? "fill-red-500" : "fill-white"
-              } cursor-pointer`}
+              className={`cursor-pointer z-10 ${displayFavoriteIcon}`}
             >
-              <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
-            </svg>
+              {isFavorite ? (
+                <HeartSolid className="h-6 w-6 text-red-500" />
+              ) : (
+                <HeartOutline className="h-6 w-6 text-gray-900" />
+              )}
+            </button>
+            <Link
+              to="/new-flat"
+              className={`cursor-pointer z-10 ${displayHomeIcon}`}
+            >
+              <HomeIcon className="w-6 h-6 text-indigo-500" />
+            </Link>
+            <Link
+              to={`/edit/${id}`}
+              className={`cursor-pointer z-10 ${displayPencilIcon}`}
+            >
+              <PencilIcon className="w-6 h-6 " />
+            </Link>
+
+            <button
+              onClick={() => onDelete(id)}
+              className={`cursor-pointer z-10 ${displayTrashIcon}`}
+            >
+              <TrashIcon className="w-6 h-6 text-red-500" />
+            </button>
           </div>
         </div>
       </div>

@@ -134,6 +134,10 @@ function HomePage() {
               key={flat.id}
               {...flat}
               onFavoriteToggle={() => handleFavoriteToggle(flat.id)}
+              displayFavoriteIcon="block"
+              displayPencilIcon="hidden"
+              displayTrashIcon="hidden"
+              displayHomeIcon="hidden"
             />
           ))
         ) : (
