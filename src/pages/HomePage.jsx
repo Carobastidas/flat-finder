@@ -8,6 +8,9 @@ import {
   getFlats,
 } from "../services/firebase";
 import { useAuth } from "../context/authContext";
+import { SkeletonHeader } from "../components/Commons/SkeletonHeader.jsx";
+import { SkeletonCard } from "../components/Commons/SkeletonCard.jsx";
+import { FilterHome } from "../components/Commons/FilterHome.jsx";
 
 function HomePage() {
   const { userDetails } = useAuth();
@@ -20,12 +23,15 @@ function HomePage() {
 
   useEffect(() => {
     // Monitorea los cambios en userDetails
-    console.log("Efecto de userDetails ejecutado, userDetails:", userDetails);
-
     if (userDetails && userDetails.id) {
       setUserId(userDetails.id);
       setLoadingUserDetails(false); // Detenemos la carga del usuario si se tiene el ID
-      console.log("ID de usuario establecido:", userDetails.id);
+      // Extrae solo los campos necesarios
+      const { userRole, uid, id, email } = userDetails;
+
+      // Guardar solo esos campos en localStorage
+      const userDataToStore = { userRole, uid, id, email };
+      localStorage.setItem("userDetails", JSON.stringify(userDataToStore));
     } else if (userDetails === null) {
       console.log("Esperando a que userDetails esté disponible...");
     }
@@ -59,7 +65,7 @@ function HomePage() {
       console.log("fetchFlats se ejecutará porque loadingUserDetails es false");
       fetchFlats();
     }
-  }, [loadingUserDetails, userDetails]); // Asegúrate de incluir `userDetails` como dependencia
+  }, [loadingUserDetails, userDetails]);
 
   useEffect(() => {
     const fetchFavorites = async () => {
@@ -117,7 +123,16 @@ function HomePage() {
   // Comprobamos si se sigue cargando
   if (loading || loadingUserDetails) {
     console.log("Mostrando estado de carga...");
-    return <div className="loading">Cargando...</div>;
+    return (
+      <>
+        <SkeletonHeader />
+        <section className="flex flex-wrap justify-center gap-6 mt-24 mr-4 ml-4 mb-16">
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+        </section>
+      </>
+    );
   }
 
   if (error) {
@@ -127,6 +142,7 @@ function HomePage() {
   return (
     <>
       <Navbar />
+      <FilterHome />
       <section className="flex flex-wrap justify-center gap-4 mt-24 mr-4 ml-4 mb-16">
         {flats.length > 0 ? (
           flats.map((flat) => (
