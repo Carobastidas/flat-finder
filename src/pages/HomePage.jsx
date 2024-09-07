@@ -20,6 +20,11 @@ function HomePage() {
   const [loadingUserDetails, setLoadingUserDetails] = useState(true);
   const [favoriteIds, setFavoriteIds] = useState([]);
   const [userId, setUserId] = useState(null);
+  const [filterOptions, setFilterOptions] = useState({
+    sortOption: null,
+    areaRange: null,
+    priceRange: null,
+  });
 
   useEffect(() => {
     // Monitorea los cambios en userDetails
@@ -41,31 +46,36 @@ function HomePage() {
     const fetchFlats = async () => {
       setLoading(true);
       try {
-        console.log("Iniciando fetchFlats");
-        const flatsList = await getFlats();
-        console.log("Flats obtenidos:", flatsList);
+        const flatsList = await getFlats(
+          filterOptions.sortOption,
+          filterOptions.areaRange,
+          filterOptions.priceRange,
+          filterOptions.search
+        );
+        console.log("Flats obtenidos en HomePage:", flatsList);
 
-        // Verifica si cada flat está en los favoritos del usuario
-        const updatedFlatsList = flatsList.map((flat) => ({
-          ...flat,
-          isFavorite: userDetails?.favorites.includes(flat.id),
-        }));
-
-        setFlats(updatedFlatsList);
+        if (flatsList.length > 0) {
+          const updatedFlatsList = flatsList.map((flat) => ({
+            ...flat,
+            isFavorite: userDetails?.favorites.includes(flat.id),
+          }));
+          setFlats(updatedFlatsList);
+        } else {
+          setFlats([]);
+          console.log("No se encontraron flats.");
+        }
       } catch (error) {
         setError("Error al obtener los pisos.");
         console.error("Error al obtener los pisos:", error);
       } finally {
         setLoading(false);
-        console.log("Finalizado fetchFlats");
       }
     };
 
-    if (!loadingUserDetails) {
-      console.log("fetchFlats se ejecutará porque loadingUserDetails es false");
+    if (!loadingUserDetails && userDetails) {
       fetchFlats();
     }
-  }, [loadingUserDetails, userDetails]);
+  }, [loadingUserDetails, userDetails, filterOptions]);
 
   useEffect(() => {
     const fetchFavorites = async () => {
@@ -120,6 +130,16 @@ function HomePage() {
     }
   };
 
+  const handleFilterChange = (filters) => {
+    console.log("Filtros recibidos desde FilterHome:", filters); // Depuración
+    setFilterOptions({
+      sortOption: filters.sortOption || null,
+      areaRange: filters.areaRange || null,
+      priceRange: filters.priceRange || null,
+      search: filters.search || null, // Asegúrate de que el valor search esté siendo actualizado
+    });
+  };
+
   // Comprobamos si se sigue cargando
   if (loading || loadingUserDetails) {
     console.log("Mostrando estado de carga...");
@@ -142,8 +162,8 @@ function HomePage() {
   return (
     <>
       <Navbar />
-      <FilterHome />
-      <section className="flex flex-wrap justify-center gap-4 mt-24 mr-4 ml-4 mb-16">
+      <FilterHome onFilterChange={handleFilterChange} />
+      <section className="flex flex-wrap justify-center gap-4 mt-12 mr-4 ml-4 mb-16">
         {flats.length > 0 ? (
           flats.map((flat) => (
             <FlatItem

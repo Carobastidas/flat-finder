@@ -9,9 +9,12 @@ import {
   updateUser,
   getUserByUid,
   getUserById,
+  deleteUser,
 } from "../services/firebase";
+import { useAuth } from "../context/authContext";
 
 function AllUsersPage() {
+  const { currentUser } = useAuth();
   const [users, setUsers] = useState([]);
   const [dropdownStates, setDropdownStates] = useState({});
 
@@ -55,13 +58,18 @@ function AllUsersPage() {
     }));
   };
 
-  const handleMakeAdmin = async (userId) => {
+  const handleToggleRole = async (userId, currentRole, userUid) => {
+    // Validar si el usuario logueado intenta cambiar el role
+    if (userUid === currentUser.uid) {
+      alert("No puedes cambiar tu propia rol.");
+      return; // Detener la ejecución si los UIDs coinciden
+    }
     try {
       console.log(
-        `Iniciando proceso de promover a admin al usuario: ${userId}`
+        `Iniciando proceso de cambio de rol para el usuario: ${userId}`
       );
 
-      // 1. Verificar si el usuario existe en la base de datos
+      // Verificar si el usuario existe en la base de datos
       console.log("Buscando usuario en la base de datos...");
       const user = await getUserById(userId);
 
@@ -72,25 +80,46 @@ function AllUsersPage() {
 
       console.log("Usuario encontrado:", user);
 
-      // 2. Actualizar el usuario en la base de datos
-      console.log("Actualizando usuario en la base de datos...");
-      await updateUser(userId, { userRole: "admin" });
-      console.log(`Usuario ${userId} actualizado a admin en la base de datos`);
+      // Alternar el rol actual
+      const newRole = currentRole === "admin" ? "user" : "admin";
 
-      // 3. Actualizar el estado de users en el componente
+      // Actualizar el usuario en la base de datos
+      console.log("Actualizando usuario en la base de datos...");
+      await updateUser(userId, { userRole: newRole });
+      console.log(
+        `Usuario ${userId} actualizado a ${newRole} en la base de datos`
+      );
+
+      // Actualizar el estado de users en el componente
       console.log("Actualizando estado de users en el componente...");
       setUsers((prevUsers) =>
         prevUsers.map((u) =>
-          u.id === userId ? { ...u, userRole: "admin" } : u
+          u.id === userId ? { ...u, userRole: newRole } : u
         )
       );
-      console.log(
-        `Usuario ${userId} actualizado a admin en el estado del componente`
-      );
-
-      console.log(`Usuario ${userId} ha sido promovido a admin`);
+      console.log(`Rol del usuario ${userId} actualizado a ${newRole}`);
     } catch (error) {
-      console.error(`Error al promover al usuario ${userId} a admin:`, error);
+      console.error(`Error al cambiar el rol del usuario ${userId}:`, error);
+    }
+  };
+
+  const handleDeleteUser = async (userId, userUid) => {
+    // Validar si el usuario logueado intenta eliminarse a sí mismo
+    if (userUid === currentUser.uid) {
+      alert("No puedes eliminar tu propia cuenta.");
+      return; // Detener la ejecución si los UIDs coinciden
+    }
+    try {
+      // 1. Llamar a la función para eliminar el usuario de Firestore
+      await deleteUser(userId);
+
+      // 2. Actualizar el estado local de los usuarios
+      setUsers((prevUsers) => prevUsers.filter((u) => u.id !== userId));
+
+      console.log(`Usuario con ID ${userId} eliminado exitosamente.`);
+    } catch (error) {
+      console.error("Error eliminando usuario:", error);
+      alert("Hubo un error al eliminar el usuario.");
     }
   };
 
@@ -102,7 +131,8 @@ function AllUsersPage() {
           users={users}
           dropdownStates={dropdownStates}
           onToggleDropdown={toggleDropdown}
-          onMakeAdmin={handleMakeAdmin}
+          onToggleRole={handleToggleRole}
+          onDeleteUser={handleDeleteUser}
         />
       </section>
     </>

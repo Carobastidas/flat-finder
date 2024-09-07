@@ -4,11 +4,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { NavbarLinks } from "./NavbarLinks";
 import { getAuth, signOut } from "firebase/auth";
 import { useAuth } from "../../context/authContext";
+import { HomeModernIcon } from "@heroicons/react/24/solid";
+import { ArrowUpTrayIcon } from "@heroicons/react/24/solid";
+import { TrashIcon } from "@heroicons/react/24/solid";
 
 function Navbar({ onClick }) {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const { currentUser } = useAuth();
+  const { currentUser, userDetails } = useAuth();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -17,30 +20,36 @@ function Navbar({ onClick }) {
   const handleLogout = async () => {
     const auth = getAuth();
     try {
+      // Cierra la sesión del usuario
       await signOut(auth);
+
+      // Elimina todos los elementos guardados en el localStorage
+      localStorage.clear();
+
+      // Redirige al usuario a la página de inicio
       navigate("/");
     } catch (error) {
-      console.log("Error en la sesion", error);
+      console.log("Error en la sesión", error);
     }
   };
 
   return (
-    <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
+    <nav className="bg-white dark:bg-gray-900 w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Link
-          to="/"
-          className="flex items-center space-x-3 rtl:space-x-reverse"
+          to="/home"
+          className="flex items-center space-x-3 rtl:space-x-reverse hover:scale-110 transition-transform"
         >
-          <img src="../../assets/logo.svg" className="h-8" alt="Logo" />
+          <HomeModernIcon className="w-8 h-8 text-gray-800 dark:text-white" />
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-            RentFlat
+            Flat Finder
           </span>
         </Link>
         <div className="flex gap-2 justify-center items-center px-1 md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           {currentUser && <span> {currentUser.displayName}</span>}
           <img
             className="w-10 h-10 object-cover rounded-full"
-            src={currentUser.photoURL}
+            src={currentUser.photoURL || userDetails.profileImage}
             alt="profile-photo"
           />
 
@@ -49,7 +58,13 @@ function Navbar({ onClick }) {
             type="button"
             className="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
           >
-            Logout
+            <ArrowUpTrayIcon className="w-6 h-6" />
+          </button>
+          <button
+            type="button"
+            className="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
+          >
+            <TrashIcon className="w-6 h-6" />
           </button>
           <button
             onClick={onClick}
@@ -102,9 +117,9 @@ function Navbar({ onClick }) {
           <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:gap-3 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
             <NavbarLinks to="/home" name="Home" />
             <NavbarLinks to="/new-flat" name="New Flat" />
-            <NavbarLinks to="/update-profile" name="Update Profile" />
+            {/* <NavbarLinks to="/update-profile" name="Update Profile" /> */}
             <NavbarLinks to="/my-flats" name="My Flats" />
-            <NavbarLinks to="/favourites" name="Favourites" />
+            <NavbarLinks to="/favourites" name="Favorites" />
             <NavbarLinks to="/all-users" name="Users" />
             <NavbarLinks to="/profile" name="Profile" />
           </ul>
