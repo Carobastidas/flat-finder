@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { AuthProvider, useAuth } from "./context/authContext";
+import { AuthProvider } from "./context/authContext";
 
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
@@ -13,25 +13,34 @@ import { MyFlatsPage } from "./pages/MyFlatsPage";
 import { AllUsersPage } from "./pages/AllUsersPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { PrivateRoute } from "./components/Commons/PrivateRoute";
+import { PublicRoute } from "./components/Commons/PublicRoute";
+import { AdminRoute } from "./components/Commons/AdminRoute";
 
 const AppRoutes = () => {
-  const { currentUser } = useAuth();
-
   return (
     <Routes>
-        <Route element={<PrivateRoute />}>
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/new-flat" element={<NewFlatPage />} />
-          <Route path="/update-profile" element={<UpdateProfilePage />} />
-          <Route path="/edit/:id" element={<EditFlatPage />} />
-          <Route path="/flat/:id" element={<FlatDetailsPage />} />
-          <Route path="/favourites" element={<FavouritesPage />} />
-          <Route path="/my-flats" element={<MyFlatsPage />} />
+      {/* Rutas privadas */}
+      <Route element={<PrivateRoute />}>
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/new-flat" element={<NewFlatPage />} />
+        <Route path="/update-profile" element={<UpdateProfilePage />} />
+        <Route path="/edit/:id" element={<EditFlatPage />} />
+        <Route path="/flat/:id" element={<FlatDetailsPage />} />
+        <Route path="/favourites" element={<FavouritesPage />} />
+        <Route path="/my-flats" element={<MyFlatsPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+
+        {/* Ruta admin */}
+        <Route element={<AdminRoute />}>
           <Route path="/all-users" element={<AllUsersPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
         </Route>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+      </Route>
+
+      {/* Rutas públicas */}
+      <Route element={<PublicRoute />}>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Route>
     </Routes>
   );
 };
