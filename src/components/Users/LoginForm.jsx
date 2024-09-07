@@ -6,7 +6,13 @@ import { HeaderForm } from "../Commons/HeaderForm";
 import { FooterForm } from "../Commons/FooterForm";
 import { useState } from "react";
 
-function LoginForm({ onLogin, onLoginWithGoogle, onResetPassword, errorMessage,setErrorMessage  }) {
+function LoginForm({
+  onLogin,
+  onLoginWithGoogle,
+  onResetPassword,
+  errorMessage,
+  setErrorMessage,
+}) {
   const [isResetMode, setIsResetMode] = useState(false); // Asegúrate de definir este estado
 
   // Esquema de validación con Yup
@@ -34,7 +40,9 @@ function LoginForm({ onLogin, onLoginWithGoogle, onResetPassword, errorMessage,s
     if (isResetMode) {
       onResetPassword(values.email).finally(() => setSubmitting(false));
     } else {
-      onLogin(values.email, values.password).finally(() => setSubmitting(false));
+      onLogin(values.email, values.password).finally(() =>
+        setSubmitting(false)
+      );
     }
   };
 
@@ -42,17 +50,26 @@ function LoginForm({ onLogin, onLoginWithGoogle, onResetPassword, errorMessage,s
     <section className="flex min-h-screen justify-center bg-gray-100 font-sans dark:bg-gray-900 antialiased">
       <div className="container rounded my-auto max-w-md border-2 border-gray-200 p-3 dark:border-gray-700 bg-white dark:bg-gray-900 antialiased">
         <div className="my-6 text-center">
-          <HeaderForm title={isResetMode ? "Reset Password" : "Login"} paragraph={isResetMode ? "Enter your email to reset your password" : "Login to access your account"} />
+          <HeaderForm
+            title={isResetMode ? "Reset Password" : "Login"}
+            paragraph={
+              isResetMode
+                ? "Enter your email to reset your password"
+                : "Login to access your account"
+            }
+          />
         </div>
         <div className="m-6">
           <Formik
             initialValues={initialValues}
-            validationSchema={isResetMode ? resetValidationSchema : validationSchema}
+            validationSchema={
+              isResetMode ? resetValidationSchema : validationSchema
+            }
             onSubmit={handleSubmit}
           >
             {({ isSubmitting }) => (
               <Form className="mb-4">
-                {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+                {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
                 <FormField
                   type="email"
                   name="email"
@@ -70,7 +87,6 @@ function LoginForm({ onLogin, onLoginWithGoogle, onResetPassword, errorMessage,s
                     label="Password"
                   />
                 )}
-
                 <ButtonPrimaryForm
                   text={isResetMode ? "Reset Password" : "Login"}
                   type="submit"
@@ -78,13 +94,12 @@ function LoginForm({ onLogin, onLoginWithGoogle, onResetPassword, errorMessage,s
                 />
 
                 {!isResetMode && (
-                  <a
-                    className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-                    href="#!"
+                  <p
+                    className="m-4 text-center font-bold text-sm text-blue-500 hover:text-blue-800 cursor-pointer"
                     onClick={() => setIsResetMode(true)}
                   >
                     Forgot Password?
-                  </a>
+                  </p>
                 )}
 
                 {isResetMode && (

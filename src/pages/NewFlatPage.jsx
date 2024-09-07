@@ -20,8 +20,7 @@ function NewFlatPage() {
     const loadDefaultImage = async () => {
       const storage = getStorage();
       const defaultImageRef = ref(storage, "default-images/default-flat.png");
-      const defaultImageUrl =
-        "https://via.placeholder.com/400x250?text=Default+Flat+Image";
+      const defaultImageUrl = "/images/flat.png";
       try {
         setImageUrl(defaultImageUrl);
       } catch (error) {
