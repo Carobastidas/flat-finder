@@ -11,6 +11,9 @@ import {
   where,
   arrayUnion,
   arrayRemove,
+  orderBy,
+  startAt,
+  endAt,
 } from "firebase/firestore";
 import { db } from "../config/firebase";
 
@@ -79,12 +82,12 @@ export const deleteUser = async (id) => {
 // >>>>>> Funciones CRUD para la colección de flats
 
 // Obtener todos los flats
-export const getFlats = async () => {
+/* export const getFlats = async () => {
   const data = await getDocs(flatsCollectionRef);
   const flats = data.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   return flats;
 };
-
+ */
 // Crear un nuevo flat
 export const createFlat = async (flat) => {
   const docRef = await addDoc(flatsCollectionRef, flat);
@@ -181,4 +184,76 @@ export const getUserByEmail = async (email) => {
     ...doc.data(),
   }));
   return users;
+};
+
+// Obtener todos los flats con posibilidad de filtros y ordenamiento
+export const getFlats = async (
+  sortOption = null,
+  areaRange = null,
+  priceRange = null,
+  search = null
+) => {
+  let flatsQuery = flatsCollectionRef;
+
+  try {
+    // Ejecutamos la consulta inicial sin aplicar filtros de búsqueda
+    const data = await getDocs(flatsQuery);
+    let flats = data.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+    // Si hay una búsqueda de ciudad, aplicamos el filtro en el cliente
+    if (search && search.trim() !== "") {
+      const searchTerm = search.trim().toLowerCase(); // Aseguramos que el término de búsqueda esté en minúsculas
+      console.log("Aplicando filtro en el cliente para la ciudad:", searchTerm);
+
+      // Filtramos los flats donde la ciudad, convertida en minúsculas, coincida con el término de búsqueda
+      flats = flats.filter((flat) =>
+        flat.city.toLowerCase().includes(searchTerm)
+      );
+    }
+
+    // Aplicar filtros de rango de precio en el cliente
+    if (priceRange) {
+      const [minPrice, maxPrice] = priceRange.split("-").map(Number);
+      flats = flats.filter(
+        (flat) => flat.rentPrice >= minPrice && flat.rentPrice <= maxPrice
+      );
+    }
+
+    // Aplicar filtros de rango de área en el cliente
+    if (areaRange) {
+      const [minArea, maxArea] = areaRange.split("-").map(Number);
+      flats = flats.filter(
+        (flat) => flat.areaSize >= minArea && flat.areaSize <= maxArea
+      );
+    }
+
+    // Ordenamiento de los resultados después de aplicar los filtros
+    if (sortOption) {
+      if (sortOption.includes("city")) {
+        flats = flats.sort((a, b) =>
+          sortOption === "city_asc"
+            ? a.city.localeCompare(b.city)
+            : b.city.localeCompare(a.city)
+        );
+      } else if (sortOption.includes("price")) {
+        flats = flats.sort((a, b) =>
+          sortOption === "price_asc"
+            ? a.rentPrice - b.rentPrice
+            : b.rentPrice - a.rentPrice
+        );
+      } else if (sortOption.includes("area")) {
+        flats = flats.sort((a, b) =>
+          sortOption === "area_asc"
+            ? a.areaSize - b.areaSize
+            : b.areaSize - a.areaSize
+        );
+      }
+    }
+
+    console.log("Flats obtenidos después de aplicar todos los filtros:", flats);
+    return flats;
+  } catch (error) {
+    console.error("Error al obtener los flats:", error);
+    return [];
+  }
 };
